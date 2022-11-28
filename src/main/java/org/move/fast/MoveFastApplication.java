@@ -9,10 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 @SpringBootApplication
 @MapperScan("org.move.fast.module.mapper")
-public class OfficialWebsiteApplication {
+public class MoveFastApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(OfficialWebsiteApplication.class, args);
+        SpringApplication.run(MoveFastApplication.class, args);
     }
 
 }
