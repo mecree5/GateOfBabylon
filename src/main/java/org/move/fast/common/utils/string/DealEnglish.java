@@ -1,11 +1,11 @@
 package org.move.fast.common.utils.string;
 
-import org.move.fast.common.utils.CmdColour;
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
+import org.move.fast.common.utils.CmdColour;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,11 @@
 package org.move.fast.module.service;
 
-import org.move.fast.module.entity.VpnUser;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.move.fast.module.entity.VpnUser;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author 代码瞬间移动工程师

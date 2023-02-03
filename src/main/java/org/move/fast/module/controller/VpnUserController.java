@@ -6,21 +6,20 @@ import org.move.fast.module.entity.VpnUser;
 import org.move.fast.module.mapper.VpnUserMapper;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author 代码瞬间移动工程师
  * @since 2023-02-03
  */
-@Controller
+@RestController
 @RequestMapping("/module/vpn-user")
 public class VpnUserController {
 

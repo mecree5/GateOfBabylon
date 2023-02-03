@@ -1,34 +1,16 @@
 package org.move.fast.common.entity;
 
+import java.io.Serializable;
+
 /**
  * @Description 统一返回处理类
  */
-public class Result<T> {
+public class Result<T> implements Serializable {
+
+    private static final long serialVersionUID = -5007654155748473782L;
     private Integer code;
     private String msg;
     private T data;
-
-    public Integer getCode() {
-        return code;
-    }
-    public Result<T> setCode(Integer code) {
-        this.code = code;
-        return this;
-    }
-    public String getMsg() {
-        return msg;
-    }
-    public Result<T> setMsg(String msg) {
-        this.msg = msg;
-        return this;
-    }
-    public T getData() {
-        return data;
-    }
-    public Result<T> setData(T data) {
-        this.data = data;
-        return this;
-    }
 
     public Result(T data) {
         this.code = ResponseCode.DEFAULT_CODE;
@@ -57,15 +39,6 @@ public class Result<T> {
         this.msg = msg;
     }
 
-    public interface ResponseCode {
-
-        public static final String DEFAULT_MSG = "success";
-        public static final Integer DEFAULT_CODE = 200;
-        public static final Integer DEFAULT_SERVER_ERROR_CODE = 500;
-        public static final Integer DEFAULT_PARAM_ERROR_CODE = 400;
-
-    }
-
     /**
      * 默认创建方法
      */
@@ -88,5 +61,41 @@ public class Result<T> {
     public static <T> Result<T> error() {
         Result<T> r = new Result<T>();
         return r.setCode(ResponseCode.DEFAULT_PARAM_ERROR_CODE);
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+
+    public Result<T> setCode(Integer code) {
+        this.code = code;
+        return this;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public Result<T> setMsg(String msg) {
+        this.msg = msg;
+        return this;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public Result<T> setData(T data) {
+        this.data = data;
+        return this;
+    }
+
+    public interface ResponseCode {
+
+        public static final String DEFAULT_MSG = "success";
+        public static final Integer DEFAULT_CODE = 200;
+        public static final Integer DEFAULT_SERVER_ERROR_CODE = 500;
+        public static final Integer DEFAULT_PARAM_ERROR_CODE = 400;
+
     }
 }

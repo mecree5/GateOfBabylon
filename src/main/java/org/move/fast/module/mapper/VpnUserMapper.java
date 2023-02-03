@@ -1,11 +1,11 @@
 package org.move.fast.module.mapper;
 
-import org.move.fast.module.entity.VpnUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.move.fast.module.entity.VpnUser;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author 代码瞬间移动工程师

@@ -1,10 +1,8 @@
 package org.move.fast.common.generator;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.fill.Column;
 
 import java.util.Collections;
 
@@ -20,13 +18,13 @@ public class MybatisPlusGenerator {
                     builder.author("代码瞬间移动工程师") // 设置作者
                             //.enableSwagger() // 开启 swagger 模式
                             .fileOverride() // 覆盖已生成文件
-                            .outputDir(System.getProperty("user.dir")+"/src/main/java"); // 指定输出目录
+                            .outputDir(System.getProperty("user.dir") + "/src/main/java"); // 指定输出目录
                 })
                 .packageConfig(builder -> {
                     builder.parent("org.move.fast") // 设置父包名
                             .moduleName("module") // 设置父包模块名
                             // .service()  // 设置自定义service路径,不设置就是默认路径
-                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") +"/src/main/resources/mapper/")); // 设置mapperXml生成路径
+                            .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + "/src/main/resources/mapper/")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
                     builder.addInclude("vpn_vmess") // 设置需要生成的表名
