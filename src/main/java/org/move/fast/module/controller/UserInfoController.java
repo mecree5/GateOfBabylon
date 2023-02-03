@@ -1,7 +1,7 @@
 package org.move.fast.module.controller;
 
 
-import org.move.fast.common.entity.ResponseBody;
+import org.move.fast.common.entity.Result;
 import org.move.fast.module.entity.UserInfo;
 import org.move.fast.module.service.IUserInfoService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,13 +29,18 @@ public class UserInfoController {
     private IUserInfoService userInfoService;
 
     @GetMapping("/list")
-    public ResponseBody<Object> getUserInfo(){
+    public Result<Object> getUserInfo(){
         List<UserInfo> list = userInfoService.list();
-        return new ResponseBody<>(list);
+        return new Result<>(list);
     }
 
     @GetMapping("/detail")
-    public ResponseBody<Object> getUserDetail(@RequestParam String name){
+    public Result<Object> getUserDetail(@RequestParam String name){
         return userInfoService.getUserDetail(name);
+    }
+
+    @GetMapping("/test")
+    public Result<Object> test(){
+        return Result.error();
     }
 }

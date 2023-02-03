@@ -1,4 +1,4 @@
-package org.move.fast.generator;
+package org.move.fast.common.generator;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;

@@ -1,6 +1,6 @@
 package org.move.fast.module.service;
 
-import org.move.fast.common.entity.ResponseBody;
+import org.move.fast.common.entity.Result;
 import org.move.fast.module.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -19,5 +19,5 @@ public interface IUserInfoService extends IService<UserInfo> {
      * @param name
      * @return
      */
-    ResponseBody<Object> getUserDetail(String name);
+    Result<Object> getUserDetail(String name);
 }
