@@ -1,14 +1,14 @@
-package org.move.fast.module.mapper;
+package org.move.fast.module.mapper.auto;
 
+import org.move.fast.module.entity.auto.VpnUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.move.fast.module.entity.VpnUser;
 
 /**
  * <p>
- * Mapper 接口
+ *  Mapper 接口
  * </p>
  *
- * @author 代码瞬间移动工程师
+ * @author YinShiJie
  * @since 2023-02-03
  */
 public interface VpnUserMapper extends BaseMapper<VpnUser> {

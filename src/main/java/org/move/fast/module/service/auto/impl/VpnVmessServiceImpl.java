@@ -1,17 +1,17 @@
-package org.move.fast.module.service.impl;
+package org.move.fast.module.service.auto.impl;
 
+import org.move.fast.module.entity.auto.VpnVmess;
+import org.move.fast.module.mapper.auto.VpnVmessMapper;
+import org.move.fast.module.service.auto.IVpnVmessService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.move.fast.module.entity.VpnVmess;
-import org.move.fast.module.mapper.VpnVmessMapper;
-import org.move.fast.module.service.IVpnVmessService;
 import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 服务实现类
+ *  服务实现类
  * </p>
  *
- * @author 代码瞬间移动工程师
+ * @author YinShiJie
  * @since 2023-02-03
  */
 @Service

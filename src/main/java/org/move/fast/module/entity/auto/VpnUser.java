@@ -1,18 +1,17 @@
-package org.move.fast.module.entity;
+package org.move.fast.module.entity.auto;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- *
+ * 
  * </p>
  *
- * @author 代码瞬间移动工程师
+ * @author YinShiJie
  * @since 2023-02-03
  */
 @TableName("vpn_user")
@@ -48,7 +47,6 @@ public class VpnUser implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
     public String getEmail() {
         return email;
     }
@@ -56,7 +54,6 @@ public class VpnUser implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
     public String getPassword() {
         return password;
     }
@@ -64,7 +61,6 @@ public class VpnUser implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
-
     public String getRssUrl() {
         return rssUrl;
     }
@@ -72,7 +68,6 @@ public class VpnUser implements Serializable {
     public void setRssUrl(String rssUrl) {
         this.rssUrl = rssUrl;
     }
-
     public String getIsCheck() {
         return isCheck;
     }
@@ -80,7 +75,6 @@ public class VpnUser implements Serializable {
     public void setIsCheck(String isCheck) {
         this.isCheck = isCheck;
     }
-
     public LocalDateTime getCrtDate() {
         return crtDate;
     }
@@ -88,7 +82,6 @@ public class VpnUser implements Serializable {
     public void setCrtDate(LocalDateTime crtDate) {
         this.crtDate = crtDate;
     }
-
     public LocalDateTime getUpdDate() {
         return updDate;
     }
@@ -100,13 +93,13 @@ public class VpnUser implements Serializable {
     @Override
     public String toString() {
         return "VpnUser{" +
-                "id=" + id +
-                ", email=" + email +
-                ", password=" + password +
-                ", rssUrl=" + rssUrl +
-                ", isCheck=" + isCheck +
-                ", crtDate=" + crtDate +
-                ", updDate=" + updDate +
-                "}";
+            "id=" + id +
+            ", email=" + email +
+            ", password=" + password +
+            ", rssUrl=" + rssUrl +
+            ", isCheck=" + isCheck +
+            ", crtDate=" + crtDate +
+            ", updDate=" + updDate +
+        "}";
     }
 }

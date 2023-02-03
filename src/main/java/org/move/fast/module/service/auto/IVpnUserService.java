@@ -1,14 +1,14 @@
-package org.move.fast.module.service;
+package org.move.fast.module.service.auto;
 
+import org.move.fast.module.entity.auto.VpnUser;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.move.fast.module.entity.VpnUser;
 
 /**
  * <p>
- * 服务类
+ *  服务类
  * </p>
  *
- * @author 代码瞬间移动工程师
+ * @author YinShiJie
  * @since 2023-02-03
  */
 public interface IVpnUserService extends IService<VpnUser> {
