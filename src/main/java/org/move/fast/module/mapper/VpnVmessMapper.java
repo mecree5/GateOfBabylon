@@ -1,6 +1,6 @@
 package org.move.fast.module.mapper;
 
-import org.move.fast.module.entity.UserInfo;
+import org.move.fast.module.entity.VpnVmess;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -9,8 +9,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author 代码瞬间移动工程师
- * @since 2022-11-23
+ * @since 2023-02-03
  */
-public interface UserInfoMapper extends BaseMapper<UserInfo> {
+public interface VpnVmessMapper extends BaseMapper<VpnVmess> {
 
 }

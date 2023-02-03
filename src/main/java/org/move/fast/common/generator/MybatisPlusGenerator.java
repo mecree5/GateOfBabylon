@@ -15,7 +15,7 @@ import java.util.Collections;
  */
 public class MybatisPlusGenerator {
     public static void main(String[] args) {
-        FastAutoGenerator.create("jdbc:mysql://localhost:3306/db?useUnicode=true&useSSL=false&characterEncoding=utf8", "root", "123456")
+        FastAutoGenerator.create("jdbc:mysql://localhost:3306/GateOfBabylon?useUnicode=true&useSSL=false&characterEncoding=utf8", "root", "123456")
                 .globalConfig(builder -> {
                     builder.author("代码瞬间移动工程师") // 设置作者
                             //.enableSwagger() // 开启 swagger 模式
@@ -29,7 +29,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") +"/src/main/resources/mapper/")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("tb_user_info") // 设置需要生成的表名
+                    builder.addInclude("vpn_vmess") // 设置需要生成的表名
                             .addTablePrefix("tb_"); // 设置过滤表前缀
 
                 })

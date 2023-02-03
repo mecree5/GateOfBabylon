@@ -2,13 +2,6 @@ package org.move.fast.common.api.crawler.dabaivpn;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import org.move.fast.common.api.ApiUrlEnum;
-import org.move.fast.common.utils.CmdColour;
-import org.move.fast.common.utils.IP;
-import org.move.fast.common.utils.Log;
-import org.move.fast.common.utils.http.Requests;
-import org.move.fast.common.utils.string.HtmlToStringUtils;
-import org.move.fast.common.utils.string.UnicodeUtils;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -16,6 +9,12 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.move.fast.common.utils.CmdColour;
+import org.move.fast.common.utils.IP;
+import org.move.fast.common.utils.Log;
+import org.move.fast.common.utils.http.Requests;
+import org.move.fast.common.utils.string.HtmlToStringUtils;
+import org.move.fast.common.utils.string.UnicodeUtils;
 
 import java.util.*;
 
@@ -26,9 +25,20 @@ import java.util.*;
  */
 public class Vpn {
 
+    //vpn的配置
+    public static final String vpn_url = "https://www.dabai.in";
+    public static final String vpn_register_path = "/auth/register";
+    public static final String vpn_emailCode_path = "/auth/send";
+    public static final String vpn_login_path = "/auth/login";
+    public static final String vpn_user_path = "/user";
+    public static final String vpn_buy_path = "/user/buy";
+    public static final String vpn_user_check = "/user/checkin";
+    //邀请码
+    public static final String vpn_user_code = "";
+
     public static void sendEmailCode(String email) {
         //现在需要验证邮箱和ip 使用x-forwarded-for伪装下即可
-        HttpResponse rsp = HttpRequest.post(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute();
+        HttpResponse rsp = HttpRequest.post(vpn_url + vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute();
         String body = rsp.body();
         System.out.println(CmdColour.getFormatLogString("邮件发送成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
     }
@@ -45,7 +55,7 @@ public class Vpn {
         body.put("code", code);
 //        body.put("emailcode", emailCode);
 
-        String answer = Requests.sendPost(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_register_path, head, body);
+        String answer = Requests.sendPost(vpn_url + vpn_register_path, head, body);
         String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + UnicodeUtils.unicodeDecode(answer);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
         Log.writeTxt(targetStr);
@@ -58,13 +68,13 @@ public class Vpn {
         body.put("email", email);
         body.put("passwd", passwd);
         body.put("code", code);
-        return takeCookie(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_login_path, head, body);
+        return takeCookie(vpn_url + vpn_login_path, head, body);
     }
 
     public static String takeV2ray(Map<String, String> cookie) {
         String result = "";
         for (String s : cookie.keySet()) {
-            result = HttpRequest.get(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_user_path).header(s, cookie.get(s)).execute().body();
+            result = HttpRequest.get(vpn_url + vpn_user_path).header(s, cookie.get(s)).execute().body();
         }
 //        String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
         String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
@@ -82,7 +92,7 @@ public class Vpn {
         stringStringHashMap.put("disableothers", "1");
         String body = "";
         for (String s : cookie.keySet()) {
-            body = HttpRequest.post(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_buy_path).header(s, cookie.get(s)).formStr(stringStringHashMap).execute().body();
+            body = HttpRequest.post(vpn_url + vpn_buy_path).header(s, cookie.get(s)).formStr(stringStringHashMap).execute().body();
         }
         System.out.println(CmdColour.getFormatLogString("购买成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
     }
@@ -90,7 +100,7 @@ public class Vpn {
     public static void checkIn(Map<String, String> cookie, String email) {
         String body = "";
         for (String s : cookie.keySet()) {
-            body = HttpRequest.post(ApiUrlEnum.vpn_url + ApiUrlEnum.vpn_user_check).header(s, cookie.get(s)).header("x-forwarded-for", IP.getRandomIp()).execute().body();
+            body = HttpRequest.post(vpn_url + vpn_user_check).header(s, cookie.get(s)).header("x-forwarded-for", IP.getRandomIp()).execute().body();
         }
         System.out.println(CmdColour.getFormatLogString("签到成功了,账号为:" + email + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
     }
