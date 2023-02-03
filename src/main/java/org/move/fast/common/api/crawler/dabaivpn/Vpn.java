@@ -11,11 +11,12 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.move.fast.common.utils.CmdColour;
 import org.move.fast.common.utils.IP;
-import org.move.fast.common.utils.Log;
 import org.move.fast.common.utils.http.Requests;
 import org.move.fast.common.utils.string.HtmlToStringUtils;
 import org.move.fast.common.utils.string.UnicodeUtils;
+import org.move.fast.module.entity.auto.VpnUser;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -36,6 +37,11 @@ public class Vpn {
     //邀请码
     public static final String vpn_user_code = "";
 
+    //客户端配置
+    public static final String client_type_v2ray = "1";
+    public static final String client_type_kitsunebi = "2";
+    public static final String client_type_clash = "3";
+
     public static void sendEmailCode(String email) {
         //现在需要验证邮箱和ip 使用x-forwarded-for伪装下即可
         HttpResponse rsp = HttpRequest.post(vpn_url + vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute();
@@ -43,7 +49,7 @@ public class Vpn {
         System.out.println(CmdColour.getFormatLogString("邮件发送成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
     }
 
-    public static void register(String email, String name, String passwd, String code, String emailCode) {
+    public static VpnUser register(String email, String name, String passwd, String emailCode) {
         Map<String, String> head = new HashMap<>();
         head.put("x-forwarded-for", IP.getRandomIp());
 
@@ -52,36 +58,54 @@ public class Vpn {
         body.put("name", name);
         body.put("passwd", passwd);
         body.put("repasswd", passwd);
-        body.put("code", code);
+        body.put("code", vpn_user_code);
 //        body.put("emailcode", emailCode);
 
         String answer = Requests.sendPost(vpn_url + vpn_register_path, head, body);
         String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + UnicodeUtils.unicodeDecode(answer);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        Log.writeTxt(targetStr);
+
+        VpnUser vpnUser = new VpnUser();
+        vpnUser.setEmail(email);
+        vpnUser.setPassword(passwd);
+        vpnUser.setIsCheck("0");
+        vpnUser.setCrtDate(LocalDateTime.now());
+        return vpnUser;
     }
 
-    public static Map<String, String> login(String email, String passwd, String code) {
+    public static Map<String, String> login(VpnUser vpnUser) {
         Map<String, String> head = new HashMap<>();
         Map<String, String> body = new HashMap<>();
 //        head.put("content-type", "application/x-www-form-urlencoded; charset=UTF-8");
-        body.put("email", email);
-        body.put("passwd", passwd);
-        body.put("code", code);
-        return takeCookie(vpn_url + vpn_login_path, head, body);
+        body.put("email", vpnUser.getEmail());
+        body.put("passwd", vpnUser.getPassword());
+        body.put("code", vpn_user_code);
+        return takeCookie(head, body);
     }
 
-    public static String takeV2ray(Map<String, String> cookie) {
+    public static Map<String, String> takeRssUrl(Map<String, String> cookie) {
         String result = "";
+        HashMap<String, String> hashMap = new HashMap<>();
         for (String s : cookie.keySet()) {
             result = HttpRequest.get(vpn_url + vpn_user_path).header(s, cookie.get(s)).execute().body();
         }
-//        String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
+
         String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
-        String targetStr = "获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray);
+        String targetStr = "v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        Log.writeTxt(targetStr);
-        return v2ray;
+        hashMap.put(client_type_v2ray, targetStr);
+
+        String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
+        targetStr = "kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi);
+        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        hashMap.put(client_type_kitsunebi, targetStr);
+
+        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
+        targetStr = "clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash);
+        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        hashMap.put(client_type_clash, targetStr);
+
+        return hashMap;
     }
 
     public static void buy(Map<String, String> cookie) {
@@ -97,18 +121,20 @@ public class Vpn {
         System.out.println(CmdColour.getFormatLogString("购买成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
     }
 
-    public static void checkIn(Map<String, String> cookie, String email) {
+    public static VpnUser checkIn(Map<String, String> cookie, VpnUser vpnUser) {
         String body = "";
         for (String s : cookie.keySet()) {
             body = HttpRequest.post(vpn_url + vpn_user_check).header(s, cookie.get(s)).header("x-forwarded-for", IP.getRandomIp()).execute().body();
         }
-        System.out.println(CmdColour.getFormatLogString("签到成功了,账号为:" + email + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        System.out.println(CmdColour.getFormatLogString("签到成功了,账号为:" + vpnUser.getEmail() + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        vpnUser.setIsCheck("1");
+        return vpnUser;
     }
 
-    public static Map<String, String> takeCookie(String url, Map<String, String> headers, Map<String, String> params) {
+    private static Map<String, String> takeCookie(Map<String, String> headers, Map<String, String> params) {
         Map<String, String> result = new HashMap<>();
         //创建post请求对象
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost("https://www.dabai.in/auth/login");
         try {
             //创建参数集合
             List<BasicNameValuePair> list = new ArrayList<>();
