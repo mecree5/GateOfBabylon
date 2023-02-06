@@ -13,7 +13,6 @@ public enum ConfKeyEnum {
     ;
 
     public static boolean check(String str){
-        Optional<ConfKeyEnum> first = Arrays.stream(ConfKeyEnum.values()).filter(s -> s.name().equals(str)).findFirst();
-        return first.isPresent();
+        return Arrays.stream(ConfKeyEnum.values()).anyMatch(s -> s.name().equals(str));
     }
 }
