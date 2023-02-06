@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.move.fast.common.entity.VpnEnum;
+import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.common.utils.CmdColour;
 import org.move.fast.common.utils.IP;
 import org.move.fast.common.utils.http.Requests;
@@ -81,9 +81,9 @@ public class Vpn {
         return takeCookie(head, body);
     }
 
-    public static Map<VpnEnum, String> takeRssUrl(Map<String, String> cookie) {
+    public static Map<VpnTypeEnum, String> takeRssUrl(Map<String, String> cookie) {
         String result = "";
-        HashMap<VpnEnum, String> hashMap = new HashMap<>();
+        HashMap<VpnTypeEnum, String> hashMap = new HashMap<>();
         for (String s : cookie.keySet()) {
             result = HttpRequest.get(vpn_url + vpn_user_path).header(s, cookie.get(s)).execute().body();
         }
@@ -91,32 +91,34 @@ public class Vpn {
         String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
         String targetStr = "v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_v2ray, targetStr);
+        hashMap.put(VpnTypeEnum.client_v2ray, targetStr);
 
         String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
         targetStr = "kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_kitsunebi, targetStr);
+        hashMap.put(VpnTypeEnum.client_kitsunebi, targetStr);
 
-        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
-        targetStr = "clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_clash, targetStr);
+//        //暂不支持clash 更新订阅为 yaml配置
+//        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
+//        targetStr = "clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash);
+//        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+//        hashMap.put(VpnEnum.client_clash, targetStr);
 
         String shadowrocket = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
         targetStr = "shadowrocket获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(shadowrocket);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_shadowrocket, targetStr);
+        hashMap.put(VpnTypeEnum.client_shadowrocket, targetStr);
 
         String Quantumult = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
         targetStr = "Quantumult获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(Quantumult);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_Quantumult, targetStr);
+        hashMap.put(VpnTypeEnum.client_Quantumult, targetStr);
 
+        //不用解密 直接为vmess串
         String QuantumultX = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
         targetStr = "QuantumultX获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(QuantumultX);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnEnum.client_QuantumultX, targetStr);
+        hashMap.put(VpnTypeEnum.client_QuantumultX, targetStr);
 
         return hashMap;
     }

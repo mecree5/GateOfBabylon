@@ -5,7 +5,8 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.move.fast.common.api.crawler.dabaivpn.Vpn;
-import org.move.fast.common.entity.VpnEnum;
+import org.move.fast.common.entity.ConfKeyEnum;
+import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.common.utils.http.Requests;
 import org.move.fast.common.utils.random.RandomString;
 import org.move.fast.module.entity.auto.SysConf;
@@ -84,25 +85,32 @@ public class RssService {
         Vpn.checkIn(cookie, vpnUser);
 
         //拿订阅地址
-        Map<VpnEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
+        Map<VpnTypeEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
 
         StringBuilder rssUrlStr = new StringBuilder();
 
-        for (VpnEnum type : rssUrls.keySet()) {
+        for (VpnTypeEnum vpnTypeEnum : rssUrls.keySet()) {
 
-            String rssUrl = rssUrls.get(type);
+            String rssUrl = rssUrls.get(vpnTypeEnum);
             //拼接总的订阅节点
-            rssUrlStr.append(type.getValue()).append(rssUrl).append("; ");
+            rssUrlStr.append(vpnTypeEnum.getName()).append(":").append(rssUrl).append("; ");
 
             //获取各类型有用节点
             VpnVmess vpnVmess = new VpnVmess();
             String base64_vmess = Requests.downloadToString(rssUrl);
 
-            String[] vmesses = Base64.decodeStr(base64_vmess).split("vmess");
-            SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, VpnEnum.setting_vpn_rss_which.getKey())).get(0);
+            String[] vmesses;
+            //QuantumultX不用解密 直接为vmess串
+            if (VpnTypeEnum.client_QuantumultX.equals(vpnTypeEnum)){
+                vmesses = base64_vmess.split("vmess");
+            } else {
+                vmesses = Base64.decodeStr(base64_vmess).split("vmess");
+            }
+
+            SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
             //由于 split() 切割会删掉 匹配字段 和 数组index=0为空
             String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal()) + 1];
-            vpnVmess.setClientType(type.getKey());
+            vpnVmess.setClientType(vpnTypeEnum.getType());
             vpnVmess.setVmessUrl(vmess);
             vpnVmess.setUserId(vpnUser.getId());
             vpnVmess.setCrtDate(LocalDateTimeUtil.now());

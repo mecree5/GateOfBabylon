@@ -5,10 +5,9 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.update.UpdateChainWrapper;
 import org.move.fast.common.api.crawler.dabaivpn.Vpn;
-import org.move.fast.common.entity.RetCodeEnum;
-import org.move.fast.common.entity.VpnEnum;
+import org.move.fast.common.entity.ConfKeyEnum;
+import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -53,7 +52,7 @@ public class VpnService {
         List<Map<String, Object>> maps = vpnVmessMapper.selectMaps(new QueryWrapper<VpnVmess>().select("COUNT(*) as num").notIn("id", usedRssUrlId));
         int num = Integer.parseInt(String.valueOf(maps.get(0).get("num")));
 
-        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, VpnEnum.setting_vpn_rss_repertory.getKey())).get(0);
+        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0);
         int repertory = Integer.parseInt(sysConf.getConfVal());
 
         if (num < repertory) {
