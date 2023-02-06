@@ -1,3 +1,6 @@
+### 手动更新库存并获取链接
+GET http://localhost:8080/vpn/stockUp/{num}
+
 ### 设置更新
 GET http://localhost:8080/vpn/upset/{key}/{value}
 

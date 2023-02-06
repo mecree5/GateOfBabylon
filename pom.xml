@@ -8,11 +8,11 @@
         <version>2.7.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>org.office</groupId>
-    <artifactId>official_website</artifactId>
+    <groupId>org.utils</groupId>
+    <artifactId>springboot_utils</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>official_website</name>
-    <description>official_website</description>
+    <name>utils</name>
+    <description>utils</description>
     <properties>
         <java.version>1.8</java.version>
     </properties>

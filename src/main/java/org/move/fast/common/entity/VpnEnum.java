@@ -1,5 +1,10 @@
 package org.move.fast.common.entity;
 
+import org.move.fast.common.Exception.CustomerException;
+
+import java.util.Arrays;
+import java.util.Optional;
+
 public enum VpnEnum {
 
     client_v2ray("1", "v2ray"),
@@ -9,18 +14,22 @@ public enum VpnEnum {
     client_Quantumult("5", "Quantumult"),
     client_QuantumultX("6", "QuantumultX"),
 
-    setting_rss_num("vpn_rss_num","")
+    setting_vpn_rss_which("vpn_rss_which",""),
+    setting_vpn_rss_repertory("vpn_rss_repertory", "")
     ;
 
+    public static final String prefix_client = "client";
 
-    private VpnEnum(String key, String value){
+    public static final String prefix_setting = "setting";
+
+    private final String key;
+
+    private final String value;
+
+    VpnEnum(String key, String value){
         this.key = key;
         this.value = value;
     }
-
-    private String key = null;
-
-    private String value = null;
 
     public String getKey() {
         return key;
@@ -30,14 +39,20 @@ public enum VpnEnum {
         return value;
     }
 
-    public String getValue(String key){
-        for (VpnEnum o : VpnEnum.values()) {
-            if (o.getKey().equals(key)){
-                return o.getValue();
-            }
+    public static String getKey(String key, String prefix){
+        Optional<VpnEnum> first = Arrays.stream(VpnEnum.values()).filter(s -> s.name().startsWith(prefix)).filter(s -> s.getKey().equals(key)).findFirst();
+        if (first.isPresent()){
+           return first.get().getKey();
         }
-        return null;
+        throw new CustomerException(RetCodeEnum.validated_error);
     }
 
+    public static String getValue(String value, String prefix){
+        Optional<VpnEnum> first = Arrays.stream(VpnEnum.values()).filter(s -> s.name().startsWith(prefix)).filter(s -> s.getValue().equals(value)).findFirst();
+        if (first.isPresent()){
+            return first.get().getValue();
+        }
+        throw new CustomerException(RetCodeEnum.validated_error);
+    }
 
 }
