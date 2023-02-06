@@ -103,6 +103,21 @@ public class Vpn {
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
         hashMap.put(VpnEnum.client_clash, targetStr);
 
+        String shadowrocket = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
+        targetStr = "shadowrocket获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(shadowrocket);
+        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        hashMap.put(VpnEnum.client_shadowrocket, targetStr);
+
+        String Quantumult = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
+        targetStr = "Quantumult获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(Quantumult);
+        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        hashMap.put(VpnEnum.client_Quantumult, targetStr);
+
+        String QuantumultX = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
+        targetStr = "QuantumultX获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(QuantumultX);
+        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        hashMap.put(VpnEnum.client_QuantumultX, targetStr);
+
         return hashMap;
     }
 

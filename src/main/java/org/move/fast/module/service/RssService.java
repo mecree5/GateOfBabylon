@@ -19,13 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
 /**
- * @description: 作为服务工具类被调用  切记不要导致循环依赖
  * @author YinShiJie
+ * @description: 作为服务工具类被调用  切记不要导致循环依赖
  * @date 2023/2/6 19:13
  */
 @Service
@@ -101,7 +100,8 @@ public class RssService {
 
             String[] vmesses = Base64.decodeStr(base64_vmess).split("vmess");
             SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, VpnEnum.setting_vpn_rss_which.getKey())).get(0);
-            String vmess = vmesses[Integer.parseInt(sysConf.getConfVal())];
+            //由于 split() 切割会删掉 匹配字段 和 数组index=0为空
+            String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal()) + 1];
             vpnVmess.setClientType(type.getKey());
             vpnVmess.setVmessUrl(vmess);
             vpnVmess.setUserId(vpnUser.getId());
