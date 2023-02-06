@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.move.fast.common.entity.Result;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.mapper.auto.VpnUserMapper;
-import org.move.fast.module.service.lisnhi;
+import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDateTime;
 
 @RestController
@@ -26,7 +25,7 @@ public class TestController {
     VpnUserMapper vpnUserMapper;
 
     @Resource
-    lisnhi isnhi;
+    VpnService vpnService;
 
     @GetMapping("/test")
     public Result<Object> getUserInfo() {
@@ -42,7 +41,7 @@ public class TestController {
     @RequestMapping(value = "/down", method = RequestMethod.GET)
     public void getDownload(HttpServletRequest request, HttpServletResponse response) {
 
-        byte[] bytes = isnhi.getRss().getBytes();
+        byte[] bytes = vpnService.getRss().getBytes();
 
         response.setContentType("text/plain");
         response.setContentLength(bytes.length);
