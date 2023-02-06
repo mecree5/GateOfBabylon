@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.move.fast.common.entity.VpnEnum;
 import org.move.fast.common.utils.CmdColour;
 import org.move.fast.common.utils.IP;
 import org.move.fast.common.utils.http.Requests;
@@ -37,10 +38,6 @@ public class Vpn {
     //邀请码
     public static final String vpn_user_code = "";
 
-    //客户端配置
-    public static final String client_type_v2ray = "1";
-    public static final String client_type_kitsunebi = "2";
-    public static final String client_type_clash = "3";
 
     public static void sendEmailCode(String email) {
         //现在需要验证邮箱和ip 使用x-forwarded-for伪装下即可
@@ -70,6 +67,7 @@ public class Vpn {
         vpnUser.setPassword(passwd);
         vpnUser.setIsCheck("0");
         vpnUser.setCrtDate(LocalDateTime.now());
+        vpnUser.setUpdDate(LocalDateTime.now());
         return vpnUser;
     }
 
@@ -83,9 +81,9 @@ public class Vpn {
         return takeCookie(head, body);
     }
 
-    public static Map<String, String> takeRssUrl(Map<String, String> cookie) {
+    public static Map<VpnEnum, String> takeRssUrl(Map<String, String> cookie) {
         String result = "";
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<VpnEnum, String> hashMap = new HashMap<>();
         for (String s : cookie.keySet()) {
             result = HttpRequest.get(vpn_url + vpn_user_path).header(s, cookie.get(s)).execute().body();
         }
@@ -93,17 +91,17 @@ public class Vpn {
         String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
         String targetStr = "v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(client_type_v2ray, targetStr);
+        hashMap.put(VpnEnum.client_v2ray, targetStr);
 
         String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
         targetStr = "kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(client_type_kitsunebi, targetStr);
+        hashMap.put(VpnEnum.client_kitsunebi, targetStr);
 
         String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
         targetStr = "clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(client_type_clash, targetStr);
+        hashMap.put(VpnEnum.client_clash, targetStr);
 
         return hashMap;
     }
@@ -134,7 +132,7 @@ public class Vpn {
     private static Map<String, String> takeCookie(Map<String, String> headers, Map<String, String> params) {
         Map<String, String> result = new HashMap<>();
         //创建post请求对象
-        HttpPost post = new HttpPost("https://www.dabai.in/auth/login");
+        HttpPost post = new HttpPost(vpn_url + vpn_login_path);
         try {
             //创建参数集合
             List<BasicNameValuePair> list = new ArrayList<>();

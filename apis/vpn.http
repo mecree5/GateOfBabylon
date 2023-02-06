@@ -1,0 +1,5 @@
+### 设置更新
+GET http://localhost:8080/vpn/upset/{key}/{value}
+
+### 获取rss订阅
+GET http://localhost:8080/vpn/down/{clientType}

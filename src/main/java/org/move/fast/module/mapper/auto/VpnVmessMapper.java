@@ -3,6 +3,8 @@ package org.move.fast.module.mapper.auto;
 import org.move.fast.module.entity.auto.VpnVmess;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
