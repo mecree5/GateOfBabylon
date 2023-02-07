@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-06
+ * @since 2023-02-07
  */
 public interface SysConfMapper extends BaseMapper<SysConf> {
 

@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-06
+ * @since 2023-02-07
  */
 @TableName("sys_conf")
 public class SysConf implements Serializable {
@@ -31,6 +31,11 @@ public class SysConf implements Serializable {
      * war
      */
     private String confVal;
+
+    /**
+     * 备注
+     */
+    private String confRemark;
 
     private LocalDateTime crtDate;
 
@@ -57,6 +62,13 @@ public class SysConf implements Serializable {
     public void setConfVal(String confVal) {
         this.confVal = confVal;
     }
+    public String getConfRemark() {
+        return confRemark;
+    }
+
+    public void setConfRemark(String confRemark) {
+        this.confRemark = confRemark;
+    }
     public LocalDateTime getCrtDate() {
         return crtDate;
     }
@@ -78,6 +90,7 @@ public class SysConf implements Serializable {
             "id=" + id +
             ", confKey=" + confKey +
             ", confVal=" + confVal +
+            ", confRemark=" + confRemark +
             ", crtDate=" + crtDate +
             ", updDate=" + updDate +
         "}";

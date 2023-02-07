@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -16,7 +14,7 @@ public class GlobalExceptionHandler {
     处理自定义异常
      */
     @ExceptionHandler(value = CustomerException.class)
-    public Result<Object> customExceptionHandler(HttpServletRequest request, CustomerException customerException) {
+    public Result<Object> customExceptionHandler(CustomerException customerException) {
         return Result.exception(customerException);
     }
 
@@ -24,7 +22,7 @@ public class GlobalExceptionHandler {
     处理系统异常
      */
     @ExceptionHandler(Exception.class)
-    public Result<Object> exceptionHandler(HttpServletRequest request, Exception exception) {
+    public Result<Object> exceptionHandler(Exception exception) {
         return Result.exception(exception);
     }
 }

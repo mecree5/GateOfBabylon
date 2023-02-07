@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-03
+ * @since 2023-02-07
  */
 @TableName("vpn_vmess")
 public class VpnVmess implements Serializable {
@@ -33,7 +33,7 @@ public class VpnVmess implements Serializable {
     private String vmessUrl;
 
     /**
-     * 客户端类型
+     * 客户端类型(1-v2ray,2-kitsunebi,3-clash)
      */
     private String clientType;
 

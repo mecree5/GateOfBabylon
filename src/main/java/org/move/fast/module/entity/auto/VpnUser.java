@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-03
+ * @since 2023-02-07
  */
 @TableName("vpn_user")
 public class VpnUser implements Serializable {
@@ -32,9 +33,24 @@ public class VpnUser implements Serializable {
     private String rssUrl;
 
     /**
-     * 是否签到0-否1-是
+     * 状态（0-已注销，1-正常， 2-过期需购买）
      */
-    private String isCheck;
+    private String status;
+
+    /**
+     * 上次使用时间
+     */
+    private LocalDate lastUsedDate;
+
+    /**
+     * 上次签到时间
+     */
+    private LocalDate lastCheckDate;
+
+    /**
+     * 上次购买时间
+     */
+    private LocalDate lastBuyTime;
 
     private LocalDateTime crtDate;
 
@@ -68,12 +84,33 @@ public class VpnUser implements Serializable {
     public void setRssUrl(String rssUrl) {
         this.rssUrl = rssUrl;
     }
-    public String getIsCheck() {
-        return isCheck;
+    public String getStatus() {
+        return status;
     }
 
-    public void setIsCheck(String isCheck) {
-        this.isCheck = isCheck;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public LocalDate getLastUsedDate() {
+        return lastUsedDate;
+    }
+
+    public void setLastUsedDate(LocalDate lastUsedDate) {
+        this.lastUsedDate = lastUsedDate;
+    }
+    public LocalDate getLastCheckDate() {
+        return lastCheckDate;
+    }
+
+    public void setLastCheckDate(LocalDate lastCheckDate) {
+        this.lastCheckDate = lastCheckDate;
+    }
+    public LocalDate getLastBuyTime() {
+        return lastBuyTime;
+    }
+
+    public void setLastBuyTime(LocalDate lastBuyTime) {
+        this.lastBuyTime = lastBuyTime;
     }
     public LocalDateTime getCrtDate() {
         return crtDate;
@@ -97,7 +134,10 @@ public class VpnUser implements Serializable {
             ", email=" + email +
             ", password=" + password +
             ", rssUrl=" + rssUrl +
-            ", isCheck=" + isCheck +
+            ", status=" + status +
+            ", lastUsedDate=" + lastUsedDate +
+            ", lastCheckDate=" + lastCheckDate +
+            ", lastBuyTime=" + lastBuyTime +
             ", crtDate=" + crtDate +
             ", updDate=" + updDate +
         "}";

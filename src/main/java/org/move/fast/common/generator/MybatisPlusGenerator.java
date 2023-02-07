@@ -31,7 +31,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + "/src/main/resources/mapper/auto/")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("sys_conf") // 设置需要生成的表名
+                    builder.addInclude("sys_conf","vpn_user","vpn_vmess") // 设置需要生成的表名
                             .addTablePrefix("tb_"); // 设置过滤表前缀
 
                 })

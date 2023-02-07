@@ -81,7 +81,7 @@ public class RssService {
 
         VpnUser vpnUser = Vpn.register(email, username, password, null);
         Map<String, String> cookie = Vpn.login(vpnUser);
-        Vpn.buy(cookie);
+        Vpn.buy(cookie, vpnUser);
         Vpn.checkIn(cookie, vpnUser);
 
         //拿订阅地址
@@ -119,6 +119,7 @@ public class RssService {
         }
 
         vpnUser.setRssUrl(rssUrlStr.toString());
+        vpnUser.setStatus("1");
         vpnUserMapper.insert(vpnUser);
 
 //        //可以考虑用事务

@@ -17,6 +17,7 @@ import org.move.fast.common.utils.string.HtmlToStringUtils;
 import org.move.fast.common.utils.string.UnicodeUtils;
 import org.move.fast.module.entity.auto.VpnUser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -65,7 +66,6 @@ public class Vpn {
         VpnUser vpnUser = new VpnUser();
         vpnUser.setEmail(email);
         vpnUser.setPassword(passwd);
-        vpnUser.setIsCheck("0");
         vpnUser.setCrtDate(LocalDateTime.now());
         vpnUser.setUpdDate(LocalDateTime.now());
         return vpnUser;
@@ -123,7 +123,7 @@ public class Vpn {
         return hashMap;
     }
 
-    public static void buy(Map<String, String> cookie) {
+    public static void buy(Map<String, String> cookie, VpnUser vpnUser) {
         HashMap<String, String> stringStringHashMap = new HashMap<>();
         stringStringHashMap.put("coupon", "");
         stringStringHashMap.put("shop", "32");
@@ -134,16 +134,16 @@ public class Vpn {
             body = HttpRequest.post(vpn_url + vpn_buy_path).header(s, cookie.get(s)).formStr(stringStringHashMap).execute().body();
         }
         System.out.println(CmdColour.getFormatLogString("购买成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        vpnUser.setLastBuyTime(LocalDate.now());
     }
 
-    public static VpnUser checkIn(Map<String, String> cookie, VpnUser vpnUser) {
+    public static void checkIn(Map<String, String> cookie, VpnUser vpnUser) {
         String body = "";
         for (String s : cookie.keySet()) {
             body = HttpRequest.post(vpn_url + vpn_user_check).header(s, cookie.get(s)).header("x-forwarded-for", IP.getRandomIp()).execute().body();
         }
         System.out.println(CmdColour.getFormatLogString("签到成功了,账号为:" + vpnUser.getEmail() + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
-        vpnUser.setIsCheck("1");
-        return vpnUser;
+        vpnUser.setLastCheckDate(LocalDate.now());
     }
 
     private static Map<String, String> takeCookie(Map<String, String> headers, Map<String, String> params) {
