@@ -1,5 +1,6 @@
 package org.move.fast;
 
+import org.apache.catalina.startup.UserConfig;
 import org.move.fast.module.service.VpnService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,9 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class MoveFastApplication {
 
     public static void main(String[] args) {
+        //设置本地代理
+        System.setProperty("socksProxyHost", "127.0.0.1");
+        System.setProperty("socksProxyPort", "10808");
         SpringApplication.run(MoveFastApplication.class, args);
     }
 

@@ -4,6 +4,7 @@ package org.move.fast.module.service;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.api.crawler.dabaivpn.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
@@ -83,6 +84,8 @@ public class RssService {
         Map<String, String> cookie = Vpn.login(vpnUser);
         Vpn.buy(cookie, vpnUser);
         Vpn.checkIn(cookie, vpnUser);
+        vpnUser.setStatus("1");
+        vpnUserMapper.insert(vpnUser);
 
         //拿订阅地址
         Map<VpnTypeEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
@@ -119,8 +122,7 @@ public class RssService {
         }
 
         vpnUser.setRssUrl(rssUrlStr.toString());
-        vpnUser.setStatus("1");
-        vpnUserMapper.insert(vpnUser);
+        vpnUserMapper.update(vpnUser,new UpdateWrapper<VpnUser>().lambda().eq(VpnUser::getEmail, vpnUser.getEmail()));
 
 //        //可以考虑用事务
 //        Object obj;

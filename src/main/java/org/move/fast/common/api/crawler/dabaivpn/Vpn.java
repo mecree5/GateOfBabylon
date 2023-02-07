@@ -89,36 +89,30 @@ public class Vpn {
         }
 
         String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
-        String targetStr = "v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnTypeEnum.client_v2ray, targetStr);
+        System.out.println(CmdColour.getFormatLogString("v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray), 32, 1));
+        hashMap.put(VpnTypeEnum.client_v2ray, v2ray);
 
         String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
-        targetStr = "kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnTypeEnum.client_kitsunebi, targetStr);
+        System.out.println(CmdColour.getFormatLogString("kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi), 32, 1));
+        hashMap.put(VpnTypeEnum.client_kitsunebi, kitsunebi);
 
 //        //暂不支持clash 更新订阅为 yaml配置
 //        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
-//        targetStr = "clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash);
-//        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-//        hashMap.put(VpnEnum.client_clash, targetStr);
+//        System.out.println(CmdColour.getFormatLogString("clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash), 32, 1));
+//        hashMap.put(VpnEnum.client_clash, clash);
 
         String shadowrocket = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
-        targetStr = "shadowrocket获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(shadowrocket);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnTypeEnum.client_shadowrocket, targetStr);
+        System.out.println(CmdColour.getFormatLogString("shadowrocket获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(shadowrocket), 32, 1));
+        hashMap.put(VpnTypeEnum.client_shadowrocket, shadowrocket);
 
         String Quantumult = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
-        targetStr = "Quantumult获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(Quantumult);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnTypeEnum.client_Quantumult, targetStr);
+        System.out.println(CmdColour.getFormatLogString("Quantumult获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(Quantumult), 32, 1));
+        hashMap.put(VpnTypeEnum.client_Quantumult, Quantumult);
 
         //不用解密 直接为vmess串
         String QuantumultX = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
-        targetStr = "QuantumultX获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(QuantumultX);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
-        hashMap.put(VpnTypeEnum.client_QuantumultX, targetStr);
+        System.out.println(CmdColour.getFormatLogString("QuantumultX获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(QuantumultX), 32, 1));
+        hashMap.put(VpnTypeEnum.client_QuantumultX, QuantumultX);
 
         return hashMap;
     }

@@ -111,7 +111,7 @@ public class VpnService {
         SysConf sysConf = new SysConf();
         sysConf.setUpdDate(LocalDateTime.now());
         sysConf.setConfVal(value);
-        int conf_key = sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().eq("conf_key", key));
+        int conf_key = sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().lambda().eq(SysConf::getConfKey, key));
         return conf_key == 1;
     }
 
