@@ -45,7 +45,7 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
-        checkRssNum();
+//        checkRssNum();
     }
 
     private void checkRssNum() {

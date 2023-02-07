@@ -1,5 +1,7 @@
 package org.move.fast.common.entity;
 
+import org.move.fast.common.Exception.CustomerException;
+
 import java.io.Serializable;
 
 /**
@@ -8,7 +10,7 @@ import java.io.Serializable;
 public class Result<T> implements Serializable {
 
     private static final long serialVersionUID = -5007654155748473782L;
-    private Integer code;
+    private String code;
     private String msg;
     private T data;
 
@@ -34,9 +36,19 @@ public class Result<T> implements Serializable {
         this.data = data;
     }
 
-    public Result(Integer code, String msg) {
+    public Result(String code, String msg) {
         this.code = code;
         this.msg = msg;
+    }
+
+    public Result(CustomerException customerException) {
+        this.code = customerException.getRetCd();
+        this.msg = customerException.getMsgDes();
+    }
+
+    public Result(Exception exception) {
+        this.code = ResponseCode.DEFAULT_SERVER_ERROR_CODE;
+        this.msg = exception.getMessage();
     }
 
     /**
@@ -48,26 +60,31 @@ public class Result<T> implements Serializable {
     }
 
     /**
-     * 默认抛出异常
-     */
-    public static <T> Result<T> exception() {
-        Result<T> r = new Result<T>();
-        return r.setCode(ResponseCode.DEFAULT_SERVER_ERROR_CODE).setMsg("服务器发生异常，请联系管理员！");
-    }
-
-    /**
      * 默认错误
      */
     public static <T> Result<T> error() {
         Result<T> r = new Result<T>();
-        return r.setCode(ResponseCode.DEFAULT_PARAM_ERROR_CODE);
+        return r.setCode(ResponseCode.DEFAULT_SERVER_ERROR_CODE);
     }
 
-    public Integer getCode() {
+    /**
+     * 默认抛出异常
+     */
+    public static <T> Result<T> exception(CustomerException customerException) {
+        Result<T> r = new Result<T>();
+        return r.setCode(customerException.getRetCd()).setMsg(customerException.getMsgDes());
+    }
+
+    public static <T> Result<T> exception(Exception exception) {
+        Result<T> r = new Result<T>();
+        return r.setCode(ResponseCode.DEFAULT_SERVER_ERROR_CODE).setMsg(exception.getMessage());
+    }
+
+    public String getCode() {
         return code;
     }
 
-    public Result<T> setCode(Integer code) {
+    public Result<T> setCode(String code) {
         this.code = code;
         return this;
     }
@@ -93,9 +110,8 @@ public class Result<T> implements Serializable {
     public interface ResponseCode {
 
         public static final String DEFAULT_MSG = "success";
-        public static final Integer DEFAULT_CODE = 200;
-        public static final Integer DEFAULT_SERVER_ERROR_CODE = 500;
-        public static final Integer DEFAULT_PARAM_ERROR_CODE = 400;
+        public static final String DEFAULT_CODE = "200";
+        public static final String DEFAULT_SERVER_ERROR_CODE = "500";
 
     }
 }
