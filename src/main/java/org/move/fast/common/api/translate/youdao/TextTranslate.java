@@ -3,6 +3,7 @@ package org.move.fast.common.api.translate.youdao;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.utils.http.Requests;
+import org.move.fast.config.ReadConf;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,9 +17,9 @@ public class TextTranslate {
     //文本翻译URL
     public static final String TEXT_YOUDAO_URL = "https://openapi.youdao.com/api";
     //应用ID
-    public static final String TEXT_APP_KEY = "1e73084594483506";
+    public static final String TEXT_APP_KEY = ReadConf.getConfValue("gateOfBabylon.api.youdao.translate.key");
     //应用密钥
-    public static final String TEXT_APP_SECRET = "Z9mxRDzD4TrnrhYVtNfBH9xBJWN9KiNr";
+    public static final String TEXT_APP_SECRET = ReadConf.getConfValue("gateOfBabylon.api.youdao.translate.secret");
     //源语言
     public static final String TEXT_LAN_FORM = "auto";
     //目标语言

@@ -3,6 +3,7 @@ package org.move.fast.common.api.translate.youdao;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.utils.http.Requests;
+import org.move.fast.config.ReadConf;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,9 +24,9 @@ public class PicOCR {
 
     private static final String YOUDAO_URL = "https://openapi.youdao.com/ocrapi";
 
-    private static final String APP_KEY = "3cb4bbb6e6623ccf";
+    private static final String APP_KEY = ReadConf.getConfValue("gateOfBabylon.api.youdao.ocr.key");
 
-    private static final String APP_SECRET = "PuURzHfOusppOQF5EKJ9bx82h0aKIsg9";
+    private static final String APP_SECRET = ReadConf.getConfValue("gateOfBabylon.api.youdao.ocr.secret");
 
     public static String OCR(String base64) {
         Map<String, String> params = new HashMap<>();

@@ -4,7 +4,6 @@ package org.move.fast.module.service;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.api.crawler.dabaivpn.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.annotation.Resource;
+import java.time.LocalDate;
 import java.util.Map;
 import java.util.Random;
 
@@ -85,7 +85,11 @@ public class RssService {
         Vpn.buy(cookie, vpnUser);
         Vpn.checkIn(cookie, vpnUser);
         vpnUser.setStatus("1");
+        vpnUser.setLastUsedDate(LocalDate.now());
+
         vpnUserMapper.insert(vpnUser);
+
+        VpnUser vpnUserId = vpnUserMapper.selectOne(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getEmail, vpnUser.getEmail()));
 
         //拿订阅地址
         Map<VpnTypeEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
@@ -104,7 +108,7 @@ public class RssService {
 
             String[] vmesses;
             //QuantumultX不用解密 直接为vmess串
-            if (VpnTypeEnum.client_QuantumultX.equals(vpnTypeEnum)){
+            if (VpnTypeEnum.client_QuantumultX.equals(vpnTypeEnum)) {
                 vmesses = base64_vmess.split("vmess");
             } else {
                 vmesses = Base64.decodeStr(base64_vmess).split("vmess");
@@ -115,14 +119,14 @@ public class RssService {
             String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal()) + 1];
             vpnVmess.setClientType(vpnTypeEnum.getType());
             vpnVmess.setVmessUrl(vmess);
-            vpnVmess.setUserId(vpnUser.getId());
+            vpnVmess.setUserId(vpnUserId.getId());
             vpnVmess.setCrtDate(LocalDateTimeUtil.now());
             vpnVmess.setUpdDate(LocalDateTimeUtil.now());
             vpnVmessMapper.insert(vpnVmess);
         }
 
-        vpnUser.setRssUrl(rssUrlStr.toString());
-        vpnUserMapper.update(vpnUser,new UpdateWrapper<VpnUser>().lambda().eq(VpnUser::getEmail, vpnUser.getEmail()));
+        vpnUserId.setRssUrl(rssUrlStr.toString());
+        vpnUserMapper.updateById(vpnUserId);
 
 //        //可以考虑用事务
 //        Object obj;

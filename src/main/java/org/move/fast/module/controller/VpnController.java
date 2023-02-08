@@ -6,6 +6,7 @@ import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
+import org.move.fast.config.ReadConf;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,7 @@ public class VpnController {
     public Result<Object> getUserInfo() throws Exception {
 
         System.out.println(123123123);
+        System.out.println(ReadConf.getConfValue("server.port"));
         throw new Exception("RetCodeEnum.validated_error");
     }
 
@@ -44,7 +46,7 @@ public class VpnController {
     @GetMapping("/upset/{key}/{value}")
     public Result<Object> upset(@PathVariable String key, @PathVariable String value) {
 
-        if ( (!ConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) < 12) {
+        if ((!ConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) < 12) {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
 

@@ -40,9 +40,12 @@ public class VpnService {
     @Resource
     SysConfMapper sysConfMapper;
 
+
     @PostConstruct
     public void init() {
+
         checkRssNum();
+
     }
 
     private void checkRssNum() {
@@ -101,8 +104,10 @@ public class VpnService {
         List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit 5"));
 
         for (VpnUser vpnUser : vpnUsers) {
-            List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getId, vpnUser.getId()));
+            List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
             urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
+            vpnUser.setLastUsedDate(LocalDate.now());
+            vpnUserMapper.updateById(vpnUser);
         }
         return Base64.encode(urls.toString());
     }

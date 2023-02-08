@@ -16,3 +16,14 @@ mybatis-plus:
   global-config:
     db-column-underline: true
     id-type: 0
+
+gateOfBabylon:
+  api:
+    youdao:
+      ocr:
+        key:
+        secret:
+      translate:
+        key:
+        secret:
+
