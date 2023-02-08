@@ -31,8 +31,7 @@ public class VpnController {
     public Result<Object> getUserInfo() throws Exception {
 
         System.out.println(123123123);
-        System.out.println(ReadConf.getConfValue("server.port"));
-        throw new Exception("RetCodeEnum.validated_error");
+        throw new RuntimeException("RetCodeEnum.validated_error");
     }
 
     @GetMapping("/stockUp/{num}")

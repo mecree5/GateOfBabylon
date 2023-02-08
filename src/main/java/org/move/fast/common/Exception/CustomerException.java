@@ -9,8 +9,8 @@ import org.move.fast.common.entity.RetCodeEnum;
  */
 public class CustomerException extends RuntimeException {
 
-    private String retCd ;
-    private String msgDes;
+    private String code;
+    private String msg;
 
     public CustomerException() {
         super();
@@ -18,26 +18,26 @@ public class CustomerException extends RuntimeException {
 
     public CustomerException(String message) {
         super(message);
-        msgDes = message;
+        msg = message;
     }
 
     public CustomerException(RetCodeEnum message) {
         super();
-        this.retCd = message.getCode();
-        this.msgDes = message.getMsg();
+        this.code = message.getCode();
+        this.msg = message.getMsg();
     }
 
     public CustomerException(String retCd, String msgDes) {
         super();
-        this.retCd = retCd;
-        this.msgDes = msgDes;
+        this.code = retCd;
+        this.msg = msgDes;
     }
 
-    public String getRetCd() {
-        return retCd;
+    public String getCode() {
+        return code;
     }
 
-    public String getMsgDes() {
-        return msgDes;
+    public String getMsg() {
+        return msg;
     }
 }

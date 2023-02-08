@@ -42,8 +42,8 @@ public class Result<T> implements Serializable {
     }
 
     public Result(CustomerException customerException) {
-        this.code = customerException.getRetCd();
-        this.msg = customerException.getMsgDes();
+        this.code = customerException.getCode();
+        this.msg = customerException.getMsg();
     }
 
     public Result(Exception exception) {
@@ -72,7 +72,7 @@ public class Result<T> implements Serializable {
      */
     public static <T> Result<T> exception(CustomerException customerException) {
         Result<T> r = new Result<T>();
-        return r.setCode(customerException.getRetCd()).setMsg(customerException.getMsgDes());
+        return r.setCode(customerException.getCode()).setMsg(customerException.getMsg());
     }
 
     public static <T> Result<T> exception(Exception exception) {
