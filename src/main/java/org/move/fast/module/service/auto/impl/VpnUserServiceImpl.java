@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-07
+ * @since 2023-02-08
  */
 @Service
 public class VpnUserServiceImpl extends ServiceImpl<VpnUserMapper, VpnUser> implements IVpnUserService {

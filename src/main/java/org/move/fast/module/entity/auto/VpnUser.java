@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-07
+ * @since 2023-02-08
  */
 @TableName("vpn_user")
 public class VpnUser implements Serializable {
@@ -36,6 +36,11 @@ public class VpnUser implements Serializable {
      * 状态（0-已注销，1-正常， 2-过期需购买）
      */
     private String status;
+
+    /**
+     * 上次更新时获取的第几个节点
+     */
+    private String lastUpdRssWhich;
 
     /**
      * 上次使用时间
@@ -91,6 +96,13 @@ public class VpnUser implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String getLastUpdRssWhich() {
+        return lastUpdRssWhich;
+    }
+
+    public void setLastUpdRssWhich(String lastUpdRssWhich) {
+        this.lastUpdRssWhich = lastUpdRssWhich;
+    }
     public LocalDate getLastUsedDate() {
         return lastUsedDate;
     }
@@ -135,6 +147,7 @@ public class VpnUser implements Serializable {
             ", password=" + password +
             ", rssUrl=" + rssUrl +
             ", status=" + status +
+            ", lastUpdRssWhich=" + lastUpdRssWhich +
             ", lastUsedDate=" + lastUsedDate +
             ", lastCheckDate=" + lastCheckDate +
             ", lastBuyTime=" + lastBuyTime +

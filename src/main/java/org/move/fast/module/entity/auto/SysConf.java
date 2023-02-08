@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-07
+ * @since 2023-02-08
  */
 @TableName("sys_conf")
 public class SysConf implements Serializable {

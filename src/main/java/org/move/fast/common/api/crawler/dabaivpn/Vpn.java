@@ -63,11 +63,12 @@ public class Vpn {
         String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + UnicodeUtils.unicodeDecode(answer);
         System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
 
+        LocalDateTime time = LocalDateTime.now();
         VpnUser vpnUser = new VpnUser();
         vpnUser.setEmail(email);
         vpnUser.setPassword(passwd);
-        vpnUser.setCrtDate(LocalDateTime.now());
-        vpnUser.setUpdDate(LocalDateTime.now());
+        vpnUser.setCrtDate(time);
+        vpnUser.setUpdDate(time);
         return vpnUser;
     }
 

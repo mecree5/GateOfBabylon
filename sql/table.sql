@@ -29,6 +29,7 @@ CREATE TABLE `vpn_user`  (
   `password` varchar(64) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL,
   `rss_url` varchar(500) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '订阅地址',
   `status` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '状态（0-已注销，1-正常， 2-过期需购买）',
+  `last_upd_rss_which` varchar(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '上次更新时获取的第几个节点',
   `last_used_date` date NULL DEFAULT NULL COMMENT '上次使用时间',
   `last_check_date` date NULL DEFAULT NULL COMMENT '上次签到时间',
   `last_buy_time` date NULL DEFAULT NULL COMMENT '上次购买时间',
@@ -49,7 +50,7 @@ CREATE TABLE `vpn_vmess`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) NULL DEFAULT NULL COMMENT 'vpn_user.id',
   `vmess_url` varchar(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT 'vmess配置地址',
-  `client_type` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '客户端类型(1-v2ray,2-kitsunebi,3-clash)',
+  `client_type` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '客户端类型(1-v2ray,2-kitsunebi,3-clash,4-shadowrocket,5-Quantumult,6-QuantumultX)',
   `crt_date` datetime(0) NULL DEFAULT NULL,
   `upd_date` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE

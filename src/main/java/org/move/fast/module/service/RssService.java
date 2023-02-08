@@ -21,6 +21,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Random;
 
@@ -75,6 +76,9 @@ public class RssService {
 
     private String getRssUrl() {
 
+        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
+        String which = sysConf.getConfVal();
+
         Random random = new Random();
         String username = RandomString.getRandomString(4);
         String password = RandomString.getRandomString(10);
@@ -86,6 +90,7 @@ public class RssService {
         Vpn.checkIn(cookie, vpnUser);
         vpnUser.setStatus("1");
         vpnUser.setLastUsedDate(LocalDate.now());
+        vpnUser.setLastUpdRssWhich(which);
 
         vpnUserMapper.insert(vpnUser);
 
@@ -104,20 +109,8 @@ public class RssService {
 
             //获取各类型有用节点
             VpnVmess vpnVmess = new VpnVmess();
-            String base64_vmess = Requests.downloadToString(rssUrl);
+            String vmess = getVmessByRssUrl(Integer.parseInt(which), vpnTypeEnum.getType(), rssUrl);
 
-            String[] vmesses;
-            //QuantumultX不用解密 直接为vmess串
-            if (VpnTypeEnum.client_QuantumultX.equals(vpnTypeEnum)) {
-                vmesses = base64_vmess.split("vmess");
-            } else {
-                vmesses = Base64.decodeStr(base64_vmess).split("vmess");
-            }
-
-            SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
-
-            //由于 split() 切割会删掉 匹配字段 和 数组index=0为空正好从1开始算
-            String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal())];
             vpnVmess.setClientType(vpnTypeEnum.getType());
             vpnVmess.setVmessUrl(vmess);
             vpnVmess.setUserId(vpnUserId.getId());
@@ -127,6 +120,7 @@ public class RssService {
         }
 
         vpnUserId.setRssUrl(rssUrlStr.toString());
+        vpnUserId.setUpdDate(LocalDateTime.now());
         vpnUserMapper.updateById(vpnUserId);
 
 //        //可以考虑用事务
@@ -144,5 +138,27 @@ public class RssService {
 
 
         return rssUrlStr.toString();
+    }
+
+    /**
+     * @Param which 第几个
+     * @Param clientType
+     * @Param rssUrl
+     * @Return
+     */
+    public String getVmessByRssUrl(int which, String clientType, String rssUrl) {
+
+        String base64_vmess = Requests.downloadToString(rssUrl);
+        String[] vmesses;
+
+        //QuantumultX不用解密 直接为vmess串
+        if (VpnTypeEnum.client_QuantumultX.getType().equals(clientType)) {
+            vmesses = base64_vmess.split("vmess");
+        } else {
+            vmesses = Base64.decodeStr(base64_vmess).split("vmess");
+        }
+        //由于 split() 切割会删掉 匹配字段 和 数组index=0为空正好从1开始算
+        return "vmess" + vmesses[which];
+
     }
 }

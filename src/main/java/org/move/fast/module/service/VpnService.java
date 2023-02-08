@@ -4,11 +4,13 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.api.crawler.dabaivpn.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
+import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -43,22 +45,7 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
-
         checkRssNum();
-
-    }
-
-    private void checkRssNum() {
-
-        List<Map<String, Object>> maps = vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").eq("status", "1").ne("last_used_date", LocalDate.now()));
-        int num = Integer.parseInt(String.valueOf(maps.get(0).get("num")));
-
-        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0);
-        int repertory = Integer.parseInt(sysConf.getConfVal());
-
-        if (num < repertory) {
-            rssService.getRssUrlAsync(repertory - num);
-        }
     }
 
     @Scheduled(cron = "0 10 0 * * ?")
@@ -95,19 +82,60 @@ public class VpnService {
         }
     }
 
+    private void checkRssNum() {
+
+        List<Map<String, Object>> maps = vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").eq("status", "1").ne("last_used_date", LocalDate.now()));
+        int num = Integer.parseInt(String.valueOf(maps.get(0).get("num")));
+
+        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0);
+        int repertory = Integer.parseInt(sysConf.getConfVal());
+
+        if (num < repertory) {
+            rssService.getRssUrlAsync(repertory - num);
+        }
+    }
+
     public String getRss(String clientType) {
 
         StringBuilder urls = new StringBuilder();
+        LocalDate now = LocalDate.now();
+        LocalDateTime nowTime = LocalDateTime.now();
 
         checkRssNum();
+
+        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
+        String which = sysConf.getConfVal();
 
         List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit 5"));
 
         for (VpnUser vpnUser : vpnUsers) {
-            List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
-            urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
-            vpnUser.setLastUsedDate(LocalDate.now());
+
+            if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())){
+                List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
+                urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
+
+                vpnUser.setLastUsedDate(now);
+                vpnUser.setUpdDate(nowTime);
+                vpnUserMapper.updateById(vpnUser);
+                continue;
+            }
+
+            //获取节点变化 懒加载方式
+            String rssUrls = vpnUser.getRssUrl();
+            String clientName = VpnTypeEnum.checkTypeAndGetName(clientType);
+            String strCache = rssUrls.substring(rssUrls.indexOf(clientName + ":"));
+            String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, strCache.substring(clientName.length() + 1, strCache.indexOf(";")));
+            urls.append(vmess).append("\r\n");
+
+            vpnUser.setLastUsedDate(now);
+            vpnUser.setUpdDate(nowTime);
+            vpnUser.setLastUpdRssWhich(clientType);
             vpnUserMapper.updateById(vpnUser);
+            VpnVmess vpnVmess = new VpnVmess();
+            vpnVmess.setUpdDate(nowTime);
+            vpnVmess.setVmessUrl(vmess);
+            vpnVmessMapper.update(vpnVmess, new UpdateWrapper<VpnVmess>().lambda().eq(VpnVmess::getUserId, vpnUser.getId()).eq(VpnVmess::getClientType, clientType));
+
         }
         return Base64.encode(urls.toString());
     }
