@@ -46,7 +46,7 @@ public class VpnController {
     @GetMapping("/upset/{key}/{value}")
     public Result<Object> upset(@PathVariable String key, @PathVariable String value) {
 
-        if ((!ConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) < 12) {
+        if ((!ConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) > 12) {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
 

@@ -115,8 +115,9 @@ public class RssService {
             }
 
             SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
-            //由于 split() 切割会删掉 匹配字段 和 数组index=0为空
-            String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal()) + 1];
+
+            //由于 split() 切割会删掉 匹配字段 和 数组index=0为空正好从1开始算
+            String vmess = "vmess" + vmesses[Integer.parseInt(sysConf.getConfVal())];
             vpnVmess.setClientType(vpnTypeEnum.getType());
             vpnVmess.setVmessUrl(vmess);
             vpnVmess.setUserId(vpnUserId.getId());
