@@ -10,16 +10,14 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.springframework.util.CollectionUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author YinShiJie
@@ -27,10 +25,10 @@ import java.util.Objects;
  */
 public class HttpReq {
 
-    public static String sendPost(String url, Map<String, String> headers, Map<String, String> params) {
+    public static String sendPost(String reqUrl, Map<String, String> headers, Map<String, String> params) {
         String result = null;
         //创建post请求对象
-        HttpPost post = new HttpPost(url);
+        HttpPost post = new HttpPost(reqUrl);
         try {
             //创建参数集合
             List<BasicNameValuePair> list = new ArrayList<>();
@@ -62,63 +60,58 @@ public class HttpReq {
         return result;
     }
 
-    public static String sendPost(String url) {
-        return sendPost(url, null, null);
+    public static String sendPost(String reqUrl) {
+        return sendPost(reqUrl, null, null);
     }
 
-    public static String sendPost(Map<String, String> headers, String url) {
-        return sendPost(url, headers, null);
+    public static String sendPost(Map<String, String> headers, String reqUrl) {
+        return sendPost(reqUrl, headers, null);
     }
 
-    public static String sendPost(String url, Map<String, String> params) {
-        return sendPost(url, null, params);
+    public static String sendPost(String reqUrl, Map<String, String> params) {
+        return sendPost(reqUrl, null, params);
     }
 
-    public static String sendGet(String url, String param) {
+
+    public static String sendGet(String reqUrl, Map<String, String> param) {
+        return sendGet(reqUrl,param,null);
+    }
+
+    public static String sendGet(Map<String, String> header, String reqUrl) {
+        return sendGet(reqUrl,null,header);
+    }
+
+    public static String sendGet(String reqUrl) {
+        return sendGet(reqUrl, null);
+    }
+
+    public static String sendGet(String reqUrl, Map<String, String> param, Map<String, String> header) {
+
         StringBuilder result = new StringBuilder();
-        String urlName;
-        try {
-            if (StrUtil.isBlank(param)) {
-                urlName = url;
-            } else {
-                urlName = url + "?" + param;
+
+        StringBuilder url = new StringBuilder(reqUrl);
+
+        if (!CollectionUtils.isEmpty(param)){
+            url.append("?");
+            for (Map.Entry<String, String> entry : param.entrySet()) {
+                url.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
             }
-            URL U = new URL(urlName);
-            URLConnection connection = U.openConnection();
-            connection.connect();
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result.append(line);
-            }
-            in.close();
-        } catch (Exception e) {
-            Log.printAndWrite(e);
         }
-        return result.toString();
-    }
-
-    public static String sendGet(String url) {
-        return sendGet(url, null);
-    }
-
-    public static String sendGet(String url, String param, Map<String, String> header) {
-        StringBuilder result = new StringBuilder();
-        String urlNameString = url + "?" + param;
 
         URL realUrl;
         URLConnection connection = null;
 
         try {
 
-            realUrl = new URL(urlNameString);
+            realUrl = new URL(url.substring(0,url.length()-1));
             // 打开和URL之间的连接
             connection = realUrl.openConnection();
             //设置超时时间
             connection.setConnectTimeout(5000);
             connection.setReadTimeout(15000);
+
             // 设置通用的请求属性
-            if (header != null) {
+            if (!CollectionUtils.isEmpty(header)) {
                 for (Map.Entry<String, String> entry : header.entrySet()) {
                     connection.setRequestProperty(entry.getKey(), entry.getValue());
                 }
