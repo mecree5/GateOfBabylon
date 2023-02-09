@@ -15,12 +15,12 @@ import java.util.Arrays;
  * @author : YinShiJie
  * @date : 2022/2/11 9:56
  */
-public class ImageToBase64 {
+public class Image {
 
     /**
      * 直接输出图片为base64码
      */
-    public static String putImage(Image image) throws IOException {
+    public static String imageToBase64(java.awt.Image image) throws IOException {
         // Image->BufferedImage
         BufferedImage bimg = new BufferedImage(image.getWidth(null),
                 image.getHeight(null), BufferedImage.TYPE_INT_RGB);

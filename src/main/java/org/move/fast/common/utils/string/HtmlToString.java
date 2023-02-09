@@ -9,10 +9,10 @@ import java.util.regex.Pattern;
  * @author : YinShiJie
  * @date : 2022/1/16 14:42
  */
-public class HtmlToStringUtils {
+public class HtmlToString {
 
     public static String removeTags(String realResp) {
-        realResp = realResp.replaceAll("\\&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "");
+        realResp = realResp.replaceAll("&[a-zA-Z]{1,10};", "").replaceAll("<[^>]*>", "");
         realResp = realResp.replaceAll("[(/>)<]", "");
         realResp = realResp.replaceAll("\r\n", "@").replaceAll("\\s*", "");
         realResp = realResp.replaceAll("@@@", "@");

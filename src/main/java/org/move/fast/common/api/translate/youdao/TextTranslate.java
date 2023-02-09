@@ -2,7 +2,7 @@ package org.move.fast.common.api.translate.youdao;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.move.fast.common.utils.http.Requests;
+import org.move.fast.common.utils.HttpReq;
 import org.move.fast.config.ReadConf;
 
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class TextTranslate {
     public static final String TEXT_LAN_TO = "auto";
 
     public static String textTran(String q) {
-        JSONObject jsonObject = JSON.parseObject(Requests.sendPost(TEXT_YOUDAO_URL, paramsMap(q)));
+        JSONObject jsonObject = JSON.parseObject(HttpReq.sendPost(TEXT_YOUDAO_URL, paramsMap(q)));
         String answer = jsonObject.getString("translation");
         return answer.substring(2, answer.length() - 2);
     }

@@ -4,10 +4,10 @@ package org.move.fast.module.service;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.move.fast.common.api.crawler.dabaivpn.Vpn;
+import org.move.fast.common.api.crawler.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
-import org.move.fast.common.utils.http.Requests;
+import org.move.fast.common.utils.HttpReq;
 import org.move.fast.common.utils.random.RandomString;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
@@ -55,7 +55,7 @@ public class RssService {
     @Async("asyncTaskExecutor")
     public void getRssUrlAsync(int num) {
         for (int i = 0; i < num; i++) {
-            getRssUrl();
+            getRssUrl(false);
         }
     }
 
@@ -69,12 +69,12 @@ public class RssService {
     public String getRssUrl(int num) {
         StringBuilder urls = new StringBuilder();
         for (int i = 0; i < num; i++) {
-            urls.append(getRssUrl());
+            urls.append(getRssUrl(true));
         }
         return urls.toString().replaceAll("; ", "\r\n");
     }
 
-    private String getRssUrl() {
+    private String getRssUrl(boolean isUse) {
 
         SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
         String which = sysConf.getConfVal();
@@ -89,8 +89,9 @@ public class RssService {
         Vpn.buy(cookie, vpnUser);
         Vpn.checkIn(cookie, vpnUser);
         vpnUser.setStatus("1");
-        vpnUser.setLastUsedDate(LocalDate.now());
         vpnUser.setLastUpdRssWhich(which);
+        //避免今天申请的账号用不了
+        vpnUser.setLastUsedDate(isUse ? LocalDate.now() : LocalDate.now().plusDays(-1));
 
         vpnUserMapper.insert(vpnUser);
 
@@ -148,7 +149,7 @@ public class RssService {
      */
     public String getVmessByRssUrl(int which, String clientType, String rssUrl) {
 
-        String base64_vmess = Requests.downloadToString(rssUrl);
+        String base64_vmess = HttpReq.downloadToString(rssUrl);
         String[] vmesses;
 
         //QuantumultX不用解密 直接为vmess串

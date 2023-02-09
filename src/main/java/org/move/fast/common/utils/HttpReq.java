@@ -1,4 +1,4 @@
-package org.move.fast.common.utils.http;
+package org.move.fast.common.utils;
 
 import cn.hutool.core.util.StrUtil;
 import org.apache.commons.io.IOUtils;
@@ -10,7 +10,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.move.fast.common.utils.Log;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -26,7 +25,7 @@ import java.util.Objects;
  * @author YinShiJie
  * @date 2022/1/19 17:20
  */
-public class Requests {
+public class HttpReq {
 
     public static String sendPost(String url, Map<String, String> headers, Map<String, String> params) {
         String result = null;
@@ -58,7 +57,7 @@ public class Requests {
             result = EntityUtils.toString(entity);
             //返回内容
         } catch (Exception e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
         return result;
     }
@@ -94,7 +93,7 @@ public class Requests {
             }
             in.close();
         } catch (Exception e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
         return result.toString();
     }
@@ -132,7 +131,7 @@ public class Requests {
             connection.connect();
 
         } catch (IOException e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
 
         // 定义 BufferedReader输入流来读取URL的响应，设置utf8防止中文乱码
@@ -142,7 +141,7 @@ public class Requests {
                 result.append(line);
             }
         } catch (IOException e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
         return result.toString();
     }
@@ -180,7 +179,7 @@ public class Requests {
             dataInputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
     }
 
@@ -208,7 +207,7 @@ public class Requests {
             result = String.valueOf(output);
             dataInputStream.close();
         } catch (IOException e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
         return result;
     }
@@ -237,7 +236,7 @@ public class Requests {
             return new String(buffer, StandardCharsets.UTF_8);
 
         } catch (IOException e) {
-            Log.writeTxt(e);
+            Log.printAndWrite(e);
         }
 
         return null;

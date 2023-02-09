@@ -5,7 +5,7 @@ import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
-import org.move.fast.common.utils.CmdColour;
+import org.move.fast.common.utils.Cmd;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class DealEnglish {
      */
     private static String[] check(String words) {
         if (words.contains("_") && words.contains(" ")) {
-            System.out.println(CmdColour.getFormatLogString("----------------------由于:" + "单词格式有误" + "----------------------", 31, 1));
+            System.out.println(Cmd.colorString("----------------------由于:" + "单词格式有误" + "----------------------", 31, 1));
             try {
                 throw new Exception();
             } catch (Exception e) {

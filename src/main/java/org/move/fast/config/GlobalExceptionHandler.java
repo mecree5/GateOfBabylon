@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = CustomerException.class)
     public Result<Object> customExceptionHandler(CustomerException customerException) {
 
-        Log.writeTxt(customerException);
+        Log.printAndWrite(customerException);
         return Result.exception(customerException);
     }
 
@@ -27,7 +27,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<Object> exceptionHandler(Exception exception) {
 
-        Log.writeTxt(exception);
+        Log.printAndWrite(exception);
         return Result.exception(exception);
     }
 

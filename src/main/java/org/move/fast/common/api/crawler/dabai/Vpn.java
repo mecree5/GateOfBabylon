@@ -1,4 +1,4 @@
-package org.move.fast.common.api.crawler.dabaivpn;
+package org.move.fast.common.api.crawler.dabai;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
@@ -10,11 +10,11 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.move.fast.common.entity.VpnTypeEnum;
-import org.move.fast.common.utils.CmdColour;
+import org.move.fast.common.utils.Cmd;
 import org.move.fast.common.utils.IP;
-import org.move.fast.common.utils.http.Requests;
-import org.move.fast.common.utils.string.HtmlToStringUtils;
-import org.move.fast.common.utils.string.UnicodeUtils;
+import org.move.fast.common.utils.HttpReq;
+import org.move.fast.common.utils.string.HtmlToString;
+import org.move.fast.common.utils.string.Unicode;
 import org.move.fast.module.entity.auto.VpnUser;
 
 import java.time.LocalDate;
@@ -44,7 +44,7 @@ public class Vpn {
         //现在需要验证邮箱和ip 使用x-forwarded-for伪装下即可
         HttpResponse rsp = HttpRequest.post(vpn_url + vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute();
         String body = rsp.body();
-        System.out.println(CmdColour.getFormatLogString("邮件发送成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        System.out.println(Cmd.colorString("邮件发送成功" + " 响应信息为" + Unicode.unicodeDecode(body), 32, 1));
     }
 
     public static VpnUser register(String email, String name, String passwd, String emailCode) {
@@ -59,9 +59,9 @@ public class Vpn {
         body.put("code", vpn_user_code);
 //        body.put("emailcode", emailCode);
 
-        String answer = Requests.sendPost(vpn_url + vpn_register_path, head, body);
-        String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + UnicodeUtils.unicodeDecode(answer);
-        System.out.println(CmdColour.getFormatLogString(targetStr, 32, 1));
+        String answer = HttpReq.sendPost(vpn_url + vpn_register_path, head, body);
+        String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + Unicode.unicodeDecode(answer);
+        System.out.println(Cmd.colorString(targetStr, 32, 1));
 
         LocalDateTime time = LocalDateTime.now();
         VpnUser vpnUser = new VpnUser();
@@ -89,30 +89,30 @@ public class Vpn {
             result = HttpRequest.get(vpn_url + vpn_user_path).header(s, cookie.get(s)).execute().body();
         }
 
-        String v2ray = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
-        System.out.println(CmdColour.getFormatLogString("v2ray获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(v2ray), 32, 1));
+        String v2ray = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
+        System.out.println(Cmd.colorString("v2ray获取订阅成功" + " 订阅信息为" + Unicode.unicodeDecode(v2ray), 32, 1));
         hashMap.put(VpnTypeEnum.client_v2ray, v2ray);
 
-        String kitsunebi = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
-        System.out.println(CmdColour.getFormatLogString("kitsunebi获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(kitsunebi), 32, 1));
+        String kitsunebi = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
+        System.out.println(Cmd.colorString("kitsunebi获取订阅成功" + " 订阅信息为" + Unicode.unicodeDecode(kitsunebi), 32, 1));
         hashMap.put(VpnTypeEnum.client_kitsunebi, kitsunebi);
 
 //        //暂不支持clash 更新订阅为 yaml配置
 //        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
-//        System.out.println(CmdColour.getFormatLogString("clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash), 32, 1));
+//        System.out.println(CmdColour.colorString("clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash), 32, 1));
 //        hashMap.put(VpnEnum.client_clash, clash);
 
-        String shadowrocket = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
-        System.out.println(CmdColour.getFormatLogString("shadowrocket获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(shadowrocket), 32, 1));
+        String shadowrocket = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
+        System.out.println(Cmd.colorString("shadowrocket获取订阅成功" + " 订阅信息为" + Unicode.unicodeDecode(shadowrocket), 32, 1));
         hashMap.put(VpnTypeEnum.client_shadowrocket, shadowrocket);
 
-        String Quantumult = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
-        System.out.println(CmdColour.getFormatLogString("Quantumult获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(Quantumult), 32, 1));
+        String Quantumult = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
+        System.out.println(Cmd.colorString("Quantumult获取订阅成功" + " 订阅信息为" + Unicode.unicodeDecode(Quantumult), 32, 1));
         hashMap.put(VpnTypeEnum.client_Quantumult, Quantumult);
 
         //不用解密 直接为vmess串
-        String QuantumultX = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
-        System.out.println(CmdColour.getFormatLogString("QuantumultX获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(QuantumultX), 32, 1));
+        String QuantumultX = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
+        System.out.println(Cmd.colorString("QuantumultX获取订阅成功" + " 订阅信息为" + Unicode.unicodeDecode(QuantumultX), 32, 1));
         hashMap.put(VpnTypeEnum.client_QuantumultX, QuantumultX);
 
         return hashMap;
@@ -128,7 +128,7 @@ public class Vpn {
         for (String s : cookie.keySet()) {
             body = HttpRequest.post(vpn_url + vpn_buy_path).header(s, cookie.get(s)).formStr(stringStringHashMap).execute().body();
         }
-        System.out.println(CmdColour.getFormatLogString("购买成功" + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        System.out.println(Cmd.colorString("购买成功" + " 响应信息为" + Unicode.unicodeDecode(body), 32, 1));
         vpnUser.setLastBuyTime(LocalDate.now());
     }
 
@@ -137,7 +137,7 @@ public class Vpn {
         for (String s : cookie.keySet()) {
             body = HttpRequest.post(vpn_url + vpn_user_check).header(s, cookie.get(s)).header("x-forwarded-for", IP.getRandomIp()).execute().body();
         }
-        System.out.println(CmdColour.getFormatLogString("签到成功了,账号为:" + vpnUser.getEmail() + " 响应信息为" + UnicodeUtils.unicodeDecode(body), 32, 1));
+        System.out.println(Cmd.colorString("签到成功了,账号为:" + vpnUser.getEmail() + " 响应信息为" + Unicode.unicodeDecode(body), 32, 1));
         vpnUser.setLastCheckDate(LocalDate.now());
     }
 
@@ -174,7 +174,7 @@ public class Vpn {
             String email = answer.substring(answer.indexOf("email="), answer.indexOf(";", answer.indexOf("email=") + 1) + 1);
             String uid = answer.substring(answer.indexOf("uid="), answer.indexOf(";", answer.indexOf("uid=") + 1) + 1);
 
-            System.out.println(CmdColour.getFormatLogString("登录成功" + " 登录信息为" + "Cookie:" + uid + expire_in + key + email, 32, 1));
+            System.out.println(Cmd.colorString("登录成功" + " 登录信息为" + "Cookie:" + uid + expire_in + key + email, 32, 1));
             result.put("Cookie", uid + expire_in + key + email);
         } catch (Exception e) {
             System.out.println("POST请求异常" + e);

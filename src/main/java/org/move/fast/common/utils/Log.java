@@ -20,7 +20,7 @@ public class Log {
         }
     }
 
-    public static void writeTxt(String targetStr) {
+    public static void printAndWrite(String targetStr) {
         String now = DateUtil.now();
         String nowDate = now.replaceAll("-", "").substring(0, 8);
         String path = LOG_PATH + nowDate + ".txt";
@@ -33,7 +33,7 @@ public class Log {
         writer.append("[" + now + "]" + targetStr + "\r\n");
     }
 
-    public static void writeTxt(Exception exception) {
+    public static void printAndWrite(Exception exception) {
         StringBuilder log = new StringBuilder(exception.getClass().toString());
         log.append("\r\n");
         StackTraceElement[] trace = exception.getStackTrace();
@@ -42,7 +42,7 @@ public class Log {
             log.append("    at  ").append(traceElement).append("\r\n");
         }
 
-        Log.writeTxt(log.toString());
+        Log.printAndWrite(log.toString());
     }
 
 }

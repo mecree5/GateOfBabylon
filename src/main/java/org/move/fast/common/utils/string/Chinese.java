@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @author : YinShiJie
  * @date : 2022/1/26 14:06
  */
-public class HanZiUtils {
+public class Chinese {
 
     /**
      * @description: takeHanZi  拿出汉字
@@ -89,28 +89,6 @@ public class HanZiUtils {
             } while (head != -1); // 如果在该段落中找不到左括号了，就终止循环
         }
         return str; // 返回更新后的str
-    }
-
-
-    public static void main(String[] args) {
-        System.out.println(replace("统一社会信用代码\n" +
-                "主体名称\n" +
-                "联系方式\n" +
-                "邮箱地址\n" +
-                "注册机关\n" +
-                "经营年限(年)\n" +
-                "注册资本(万元\n" +
-                "实收资本(万元)\n" +
-                "公司人数\n" +
-                "财务规章制度数量\n" +
-                "财务制度信息\n" +
-                "固定资产(万元)\n" +
-                "财务报表信息\n" +
-                "专业技术人员数量\n" +
-                "纳税评级\n" +
-                "社保缴纳人数"));
-
-
     }
 
 }

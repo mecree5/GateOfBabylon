@@ -10,7 +10,7 @@ import com.alibaba.druid.util.JdbcConstants;
  * @author: YinShiJie
  * @create: 2022-02-21 11:11
  **/
-public class SQLFormatterUtil {
+public class SQLFormatter {
     /**
      * @description: mySqlUpperCase 关键词大写
      * @author YinShiJie

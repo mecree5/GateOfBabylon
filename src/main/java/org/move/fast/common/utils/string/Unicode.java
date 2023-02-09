@@ -4,13 +4,12 @@ package org.move.fast.common.utils.string;
  * Unicode工具类
  * 包含 unicode编码转中文功能
  */
-public class UnicodeUtils {
+public class Unicode {
 
     /**
      * unicode编码转中文
      *
-     * @param unicodeString
-     * @return
+     * @Param unicodeString
      */
     public static String unicodeDecode(String unicodeString) {
         char aChar;

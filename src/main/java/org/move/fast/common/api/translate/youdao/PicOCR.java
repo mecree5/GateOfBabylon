@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.entity.RetCodeEnum;
-import org.move.fast.common.utils.http.Requests;
+import org.move.fast.common.utils.HttpReq;
 import org.move.fast.config.ReadConf;
 
 import java.io.File;
@@ -50,7 +50,7 @@ public class PicOCR {
         params.put("appKey", APP_KEY);
         params.put("salt", salt);
         params.put("sign", sign);
-        return Requests.sendPost(YOUDAO_URL, params);
+        return HttpReq.sendPost(YOUDAO_URL, params);
     }
 
     public static String loadAsBase64(String imgFile) {

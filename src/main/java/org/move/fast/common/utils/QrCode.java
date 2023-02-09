@@ -17,7 +17,7 @@ import java.io.IOException;
  * @author: YinShiJie
  * @create: 2022-02-23 09:34
  **/
-public class QrCodeGenerator {
+public class QrCode {
 
     /**
      * @description: crateQRCode 生成base64的二维码 不支持中文
@@ -26,7 +26,7 @@ public class QrCodeGenerator {
      * @Return java.lang.String
      * @date 2022/2/21 16:45
      */
-    public static String crateQRCode(String content) {
+    public static String strToQRCode(String content) {
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         QRCodeWriter writer = new QRCodeWriter();
         BitMatrix bitMatrix;
