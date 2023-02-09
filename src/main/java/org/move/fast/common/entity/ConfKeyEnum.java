@@ -10,6 +10,6 @@ public enum ConfKeyEnum {
     ;
 
     public static boolean check(String str) {
-        return Arrays.stream(ConfKeyEnum.values()).anyMatch(s -> s.name().equals(str));
+        return Arrays.stream(ConfKeyEnum.values()).anyMatch(s -> s.name().equalsIgnoreCase(str));
     }
 }

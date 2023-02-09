@@ -153,93 +153,53 @@ public class HttpReq {
      * @Return void
      * @date 2022/2/25 17:30
      */
-    public static void download(String urlList, String path) {
+    public static void download(String reqUrl, String path) {
         URL url;
         HttpURLConnection conn;
-        try {
-            url = new URL(urlList);
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
+            url = new URL(reqUrl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(20 * 1000);
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+
+            //“ByteArrayOutputStream或ByteArrayInputStream是内存读写流 不需要手动关闭
             final ByteArrayOutputStream outPut = new ByteArrayOutputStream();
+
             IOUtils.copy(conn.getInputStream(), outPut);
-            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(outPut.toByteArray()));
 
-            FileOutputStream fileOutputStream = new FileOutputStream(path);
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
+            fileOutputStream.write(outPut.toByteArray());
 
-            byte[] buffer = new byte[1024];
-            int length;
-
-            while ((length = dataInputStream.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-            fileOutputStream.write(output.toByteArray());
-            dataInputStream.close();
-            fileOutputStream.close();
         } catch (IOException e) {
             Log.printAndWrite(e);
         }
     }
 
-    public static String downloadToString(String urlList) {
+    public static String downloadToString(String reqUrl) {
         URL url;
         HttpURLConnection conn;
-        String result = "";
+        String result = null;
+
         try {
-            url = new URL(urlList);
+
+            url = new URL(reqUrl);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setConnectTimeout(20 * 1000);
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+
+            //“ByteArrayOutputStream或ByteArrayInputStream是内存读写流 不需要手动关闭
             final ByteArrayOutputStream outPut = new ByteArrayOutputStream();
             IOUtils.copy(conn.getInputStream(), outPut);
-            DataInputStream dataInputStream = new DataInputStream(new ByteArrayInputStream(outPut.toByteArray()));
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
 
-            byte[] buffer = new byte[1024];
-            int length;
+            result = String.valueOf(outPut);
 
-            while ((length = dataInputStream.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-            result = String.valueOf(output);
-            dataInputStream.close();
         } catch (IOException e) {
             Log.printAndWrite(e);
         }
+
         return result;
-    }
-
-    /**
-     * @description: download 通过url下载
-     * @author YinShiJie
-     * @Param [urlList, path]  path需精确到后缀名
-     * @Return void
-     * @date 2022/2/25 17:30
-     */
-    public static String download(String urlList) {
-        try {
-            URL url = new URL(urlList);
-            DataInputStream dataInputStream = new DataInputStream(url.openStream());
-
-            ByteArrayOutputStream output = new ByteArrayOutputStream();
-
-            byte[] buffer = new byte[1024];
-            int length;
-
-            while ((length = dataInputStream.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-
-            return new String(buffer, StandardCharsets.UTF_8);
-
-        } catch (IOException e) {
-            Log.printAndWrite(e);
-        }
-
-        return null;
     }
 
 }

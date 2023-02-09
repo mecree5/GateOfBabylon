@@ -53,7 +53,7 @@ public class VpnController {
 
 
     @RequestMapping(value = "/down/{clientName}", method = RequestMethod.GET)
-    public void down(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName) throws IOException {
+    public void down(HttpServletResponse response, @PathVariable String clientName) throws IOException {
 
         String type = VpnTypeEnum.checkNameAndGetType(clientName);
 

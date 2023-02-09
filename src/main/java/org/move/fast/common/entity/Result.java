@@ -55,7 +55,7 @@ public class Result<T> implements Serializable {
      * 默认创建方法
      */
     public static <T> Result<T> success() {
-        Result<T> r = new Result<T>();
+        Result<T> r = new Result<>();
         return r.setCode(ResponseCode.DEFAULT_CODE);
     }
 
@@ -63,7 +63,7 @@ public class Result<T> implements Serializable {
      * 默认错误
      */
     public static <T> Result<T> error() {
-        Result<T> r = new Result<T>();
+        Result<T> r = new Result<>();
         return r.setCode(ResponseCode.DEFAULT_SERVER_ERROR_CODE);
     }
 
@@ -71,12 +71,12 @@ public class Result<T> implements Serializable {
      * 默认抛出异常
      */
     public static <T> Result<T> exception(CustomerException customerException) {
-        Result<T> r = new Result<T>();
+        Result<T> r = new Result<>();
         return r.setCode(customerException.getCode()).setMsg(customerException.getMsg());
     }
 
     public static <T> Result<T> exception(Exception exception) {
-        Result<T> r = new Result<T>();
+        Result<T> r = new Result<>();
         return r.setCode(ResponseCode.DEFAULT_SERVER_ERROR_CODE).setMsg(exception.getMessage());
     }
 
@@ -109,9 +109,9 @@ public class Result<T> implements Serializable {
 
     public interface ResponseCode {
 
-        public static final String DEFAULT_MSG = "success";
-        public static final String DEFAULT_CODE = "200";
-        public static final String DEFAULT_SERVER_ERROR_CODE = "500";
+        String DEFAULT_MSG = "success";
+        String DEFAULT_CODE = "200";
+        String DEFAULT_SERVER_ERROR_CODE = "500";
 
     }
 }

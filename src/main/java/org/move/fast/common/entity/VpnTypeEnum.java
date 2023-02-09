@@ -33,7 +33,7 @@ public enum VpnTypeEnum {
     }
 
     public static String checkNameAndGetType(String name) {
-        Optional<VpnTypeEnum> first = Arrays.stream(VpnTypeEnum.values()).filter(s -> s.getName().equals(name)).findFirst();
+        Optional<VpnTypeEnum> first = Arrays.stream(VpnTypeEnum.values()).filter(s -> s.getName().equalsIgnoreCase(name)).findFirst();
         if (first.isPresent()) {
             return first.get().getType();
         }
