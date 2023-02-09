@@ -45,7 +45,7 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
-//        checkRssNum();
+        checkRssNum();
     }
 
     @Scheduled(cron = "0 10 0 * * ?")
@@ -101,7 +101,7 @@ public class VpnService {
         LocalDate now = LocalDate.now();
         LocalDateTime nowTime = LocalDateTime.now();
 
-//        checkRssNum();
+        checkRssNum();
 
         SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
         String which = sysConf.getConfVal();

@@ -27,10 +27,10 @@ public class VpnController {
     RssService rssService;
 
     @GetMapping("/test")
-    public Result<Object> getUserInfo() throws Exception {
+    public Result<Object> test() {
 
         System.out.println(123123123);
-        throw new RuntimeException("RetCodeEnum.validated_error");
+        return Result.success();
     }
 
     @GetMapping("/stockUp/{num}")

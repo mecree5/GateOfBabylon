@@ -14,7 +14,7 @@ public class Log {
 
     static {
         String[] list = new File(LOG_PATH).list();
-        if (list != null) {
+        if (list != null && list.length > 0) {
             String fileName = list[list.length - 1];
             LAST_WRITE_TIME = fileName.substring(0, fileName.indexOf(".txt"));
         }
@@ -35,6 +35,7 @@ public class Log {
 
     public static void writeTxt(Exception exception) {
         StringBuilder log = new StringBuilder(exception.getClass().toString());
+        log.append("\r\n");
         StackTraceElement[] trace = exception.getStackTrace();
 
         for (StackTraceElement traceElement : trace) {
