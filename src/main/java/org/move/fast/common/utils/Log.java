@@ -29,7 +29,19 @@ public class Log {
             LAST_WRITE_TIME = nowDate;
         }
         FileWriter writer = new FileWriter(path);
+        System.err.println(targetStr);
         writer.append("[" + now + "]" + targetStr + "\r\n");
+    }
+
+    public static void writeTxt(Exception exception) {
+        StringBuilder log = new StringBuilder(exception.getClass().toString());
+        StackTraceElement[] trace = exception.getStackTrace();
+
+        for (StackTraceElement traceElement : trace) {
+            log.append("    at  ").append(traceElement).append("\r\n");
+        }
+
+        Log.writeTxt(log.toString());
     }
 
 }

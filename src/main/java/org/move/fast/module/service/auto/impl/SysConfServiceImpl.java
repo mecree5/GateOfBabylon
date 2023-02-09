@@ -1,14 +1,14 @@
 package org.move.fast.module.service.auto.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.mapper.auto.SysConfMapper;
 import org.move.fast.module.service.auto.ISysConfService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author YinShiJie

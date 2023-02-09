@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 
 /**
- *只能读取application.yml
+ * 只能读取application.yml
  */
 @Component
 public class ReadConf {
@@ -17,12 +17,12 @@ public class ReadConf {
     @Autowired
     Environment initEnvironment;
 
+    public static String getConfValue(String key) {
+        return environment.getProperty(key);
+    }
+
     @PostConstruct
     public void setEnvironment() {
         environment = initEnvironment;
-    }
-
-    public static String getConfValue(String key) {
-        return environment.getProperty(key);
     }
 }

@@ -60,66 +60,66 @@ public class IP {
     }
 
     public static String getIpAddressInWindows() {
+        InetAddress address;
         try {
-            InetAddress address = InetAddress.getLocalHost();
-            return address.getHostAddress();
-
+            address = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+        return address.getHostAddress();
+
     }
 
     public static List<String> getAllIpAddress() {
         ArrayList<String> ips = new ArrayList<>();
+        Enumeration<NetworkInterface> allNetworkInterfaces;
         try {
-            Enumeration<NetworkInterface> allNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-            NetworkInterface networkInterface = null;
+            allNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+        } catch (SocketException e) {
+            throw new RuntimeException(e);
+        }
+        NetworkInterface networkInterface = null;
 
-            while (allNetworkInterfaces.hasMoreElements()) {
-                networkInterface = allNetworkInterfaces.nextElement();
-                //System.out.println("network interface: " + networkInterface.getDisplayName());
-                Enumeration<InetAddress> allInetAddress = networkInterface.getInetAddresses();
-                InetAddress ipAddress = null;
-                while (allInetAddress.hasMoreElements()) {
-                    //get next ip address
-                    ipAddress = allInetAddress.nextElement();
-                    if (ipAddress instanceof Inet4Address) {
-                        String hostAddress = ipAddress.getHostAddress();
-                        if (!"127.0.0.1".equals(hostAddress)) {
-                            ips.add(hostAddress);
-                        }
-                    }
+        networkInterface = allNetworkInterfaces.nextElement();
+        //System.out.println("network interface: " + networkInterface.getDisplayName());
+        Enumeration<InetAddress> allInetAddress = networkInterface.getInetAddresses();
+        InetAddress ipAddress = null;
+        while (allInetAddress.hasMoreElements()) {
+            //get next ip address
+            ipAddress = allInetAddress.nextElement();
+            if (ipAddress instanceof Inet4Address) {
+                String hostAddress = ipAddress.getHostAddress();
+                if (!"127.0.0.1".equals(hostAddress)) {
+                    ips.add(hostAddress);
                 }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
         }
         return ips;
     }
 
     public static String getIpAddressByName(String networkInterfaceName) {
+
+        NetworkInterface networkInterface = null;
         try {
-            NetworkInterface networkInterface = NetworkInterface.getByName(networkInterfaceName);
-            if (networkInterface == null) {
-                return null;
-            }
-            System.out.println("network interface: " + networkInterface.getDisplayName());
-
-            InetAddress ipAddress = null;
-            Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-
-            while (addresses.hasMoreElements()) {
-                ipAddress = addresses.nextElement();
-
-                if (ipAddress instanceof Inet4Address) {
-                    return ipAddress.getHostAddress();
-                }
-            }
+            networkInterface = NetworkInterface.getByName(networkInterfaceName);
         } catch (SocketException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+        if (networkInterface == null) {
+            return null;
+        }
+        System.out.println("network interface: " + networkInterface.getDisplayName());
 
+        InetAddress ipAddress = null;
+        Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+
+        while (addresses.hasMoreElements()) {
+            ipAddress = addresses.nextElement();
+
+            if (ipAddress instanceof Inet4Address) {
+                return ipAddress.getHostAddress();
+            }
+        }
         return null;
     }
 

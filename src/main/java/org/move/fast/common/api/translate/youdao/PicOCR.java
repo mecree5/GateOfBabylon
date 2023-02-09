@@ -2,13 +2,16 @@ package org.move.fast.common.api.translate.youdao;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.move.fast.common.Exception.CustomerException;
+import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.utils.http.Requests;
 import org.move.fast.config.ReadConf;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,19 +57,16 @@ public class PicOCR {
         //将图片文件转化为字节数组字符串，并对其进行Base64编码处理
         File file = new File(imgFile);
         if (!file.exists()) {
-            System.out.println("文件不存在");
-            return null;
+            throw new CustomerException(RetCodeEnum.file_not_exists, imgFile);
         }
-        InputStream in;
+
         byte[] data = null;
         //读取图片字节数组
-        try {
-            in = new FileInputStream(imgFile);
+        try (InputStream in = Files.newInputStream(Paths.get(imgFile))) {
             data = new byte[in.available()];
             in.read(data);
-            in.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(imgFile + "读取失败" + e);
         }
         //对字节数组Base64编码
         return Base64.getEncoder().encodeToString(data);//返回Base64编码过的字节数组字符串

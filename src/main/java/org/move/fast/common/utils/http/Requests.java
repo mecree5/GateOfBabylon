@@ -10,6 +10,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.move.fast.common.utils.Log;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -19,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author YinShiJie
@@ -56,7 +58,7 @@ public class Requests {
             result = EntityUtils.toString(entity);
             //返回内容
         } catch (Exception e) {
-            System.out.println("POST请求异常" + e);
+            Log.writeTxt(e);
         }
         return result;
     }
@@ -92,7 +94,7 @@ public class Requests {
             }
             in.close();
         } catch (Exception e) {
-            System.out.println("GET请求异常" + e);
+            Log.writeTxt(e);
         }
         return result.toString();
     }
@@ -101,43 +103,47 @@ public class Requests {
         return sendGet(url, null);
     }
 
-    public static String sendGet(String url, String param, Map<String, String> header) throws IOException {
+    public static String sendGet(String url, String param, Map<String, String> header) {
         StringBuilder result = new StringBuilder();
-        BufferedReader in;
         String urlNameString = url + "?" + param;
-        URL realUrl = new URL(urlNameString);
-        // 打开和URL之间的连接
-        URLConnection connection = realUrl.openConnection();
-        //设置超时时间
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(15000);
-        // 设置通用的请求属性
-        if (header != null) {
-            for (Map.Entry<String, String> entry : header.entrySet()) {
-//                System.out.println(entry.getKey() + ":" + entry.getValue());
-                connection.setRequestProperty(entry.getKey(), entry.getValue());
+
+        URL realUrl;
+        URLConnection connection = null;
+
+        try {
+
+            realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            connection = realUrl.openConnection();
+            //设置超时时间
+            connection.setConnectTimeout(5000);
+            connection.setReadTimeout(15000);
+            // 设置通用的请求属性
+            if (header != null) {
+                for (Map.Entry<String, String> entry : header.entrySet()) {
+                    connection.setRequestProperty(entry.getKey(), entry.getValue());
+                }
             }
+
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            // 建立实际的连接
+            connection.connect();
+
+        } catch (IOException e) {
+            Log.writeTxt(e);
         }
 
-        connection.setRequestProperty("accept", "*/*");
-        connection.setRequestProperty("connection", "Keep-Alive");
-        connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-
-        // 建立实际的连接
-        connection.connect();
-        // 获取所有响应头字段
-        Map<String, List<String>> map = connection.getHeaderFields();
-        // 遍历所有的响应头字段
-//        for (String key : map.keySet()) {
-//            System.out.println(key + "--->" + map.get(key));
-//        }
         // 定义 BufferedReader输入流来读取URL的响应，设置utf8防止中文乱码
-        in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
-        String line;
-        while ((line = in.readLine()) != null) {
-            result.append(line);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(Objects.requireNonNull(connection).getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
+            while ((line = in.readLine()) != null) {
+                result.append(line);
+            }
+        } catch (IOException e) {
+            Log.writeTxt(e);
         }
-        in.close();
         return result.toString();
     }
 
@@ -174,7 +180,7 @@ public class Requests {
             dataInputStream.close();
             fileOutputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.writeTxt(e);
         }
     }
 
@@ -202,7 +208,7 @@ public class Requests {
             result = String.valueOf(output);
             dataInputStream.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.writeTxt(e);
         }
         return result;
     }
@@ -215,12 +221,10 @@ public class Requests {
      * @date 2022/2/25 17:30
      */
     public static String download(String urlList) {
-        URL url;
         try {
-            url = new URL(urlList);
+            URL url = new URL(urlList);
             DataInputStream dataInputStream = new DataInputStream(url.openStream());
 
-//            FileOutputStream fileOutputStream = new FileOutputStream(path);
             ByteArrayOutputStream output = new ByteArrayOutputStream();
 
             byte[] buffer = new byte[1024];
@@ -229,14 +233,13 @@ public class Requests {
             while ((length = dataInputStream.read(buffer)) > 0) {
                 output.write(buffer, 0, length);
             }
-            //            System.out.println(encode);
-//            fileOutputStream.write(output.toByteArray());
-//            dataInputStream.close();
-//            fileOutputStream.close();
+
             return new String(buffer, StandardCharsets.UTF_8);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.writeTxt(e);
         }
+
         return null;
     }
 

@@ -42,7 +42,7 @@ public class SnapEmail {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
         return null;

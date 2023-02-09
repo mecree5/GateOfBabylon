@@ -14,11 +14,12 @@ import java.io.IOException;
 public class IO {
 
     public static void saveImg(Image image, String pathName) {
-        File file = isExist(pathName);
+        File file = null;
         try {
+            file = isExist(pathName);
             ImageIO.write((RenderedImage) image, pathName.substring(pathName.length() - 3), file);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(pathName + "路径不存在或文件写入出错");
         }
     }
 
@@ -30,24 +31,15 @@ public class IO {
      * @date 2022/2/11 14:46
      */
     public static void saveTxt(String content, String pathName) {
-        File file = isExist(pathName);
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(file);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            assert fw != null;
+        File file = null;
+        file = isExist(pathName);
+
+        try (FileWriter fw = new FileWriter(file);) {
             fw.write(content);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(pathName + "文件写入出错");
         }
-        try {
-            fw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+
     }
 
     private static File isExist(String pathName) {
@@ -60,7 +52,7 @@ public class IO {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new RuntimeException(pathName + "创建文件出错");
             }
         }
         return file;

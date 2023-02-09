@@ -1,11 +1,11 @@
 package org.move.fast.module.service.auto;
 
-import org.move.fast.module.entity.auto.SysConf;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.move.fast.module.entity.auto.SysConf;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author YinShiJie

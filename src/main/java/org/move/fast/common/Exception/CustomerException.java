@@ -4,8 +4,8 @@ import org.move.fast.common.entity.RetCodeEnum;
 
 /**
  * 多数情况下，创建自定义异常需要继承Exception，本例继承Exception的子类RuntimeException
- * @author Mahc
  *
+ * @author Mahc
  */
 public class CustomerException extends RuntimeException {
 
@@ -25,6 +25,12 @@ public class CustomerException extends RuntimeException {
         super();
         this.code = message.getCode();
         this.msg = message.getMsg();
+    }
+
+    public CustomerException(RetCodeEnum message, String fill) {
+        super();
+        this.code = message.getCode();
+        this.msg = message.getMsg() + fill;
     }
 
     public CustomerException(String retCd, String msgDes) {

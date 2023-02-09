@@ -3,7 +3,6 @@ package org.move.fast.common.generator;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.baomidou.mybatisplus.generator.engine.VelocityTemplateEngine;
 
 import java.util.Collections;
 
@@ -31,7 +30,7 @@ public class MybatisPlusGenerator {
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, System.getProperty("user.dir") + "/src/main/resources/mapper/auto/")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("sys_conf","vpn_user","vpn_vmess") // 设置需要生成的表名
+                    builder.addInclude("sys_conf", "vpn_user", "vpn_vmess") // 设置需要生成的表名
                             .addTablePrefix("tb_"); // 设置过滤表前缀
 
                 })

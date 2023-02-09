@@ -1,11 +1,11 @@
 package org.move.fast.module.mapper.auto;
 
-import org.move.fast.module.entity.auto.SysConf;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.move.fast.module.entity.auto.SysConf;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author YinShiJie

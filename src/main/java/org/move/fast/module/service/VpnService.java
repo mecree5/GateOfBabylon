@@ -45,7 +45,7 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
-        checkRssNum();
+//        checkRssNum();
     }
 
     @Scheduled(cron = "0 10 0 * * ?")
@@ -101,7 +101,7 @@ public class VpnService {
         LocalDate now = LocalDate.now();
         LocalDateTime nowTime = LocalDateTime.now();
 
-        checkRssNum();
+//        checkRssNum();
 
         SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
         String which = sysConf.getConfVal();
@@ -110,7 +110,7 @@ public class VpnService {
 
         for (VpnUser vpnUser : vpnUsers) {
 
-            if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())){
+            if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
                 List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
                 urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
 

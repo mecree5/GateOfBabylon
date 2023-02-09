@@ -1,7 +1,5 @@
 package org.move.fast;
 
-import org.apache.catalina.startup.UserConfig;
-import org.move.fast.module.service.VpnService;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

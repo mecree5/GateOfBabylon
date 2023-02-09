@@ -6,7 +6,6 @@ import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
-import org.move.fast.config.ReadConf;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;

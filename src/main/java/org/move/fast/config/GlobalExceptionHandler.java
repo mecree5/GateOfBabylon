@@ -17,7 +17,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = CustomerException.class)
     public Result<Object> customExceptionHandler(CustomerException customerException) {
 
-        writeToLog(customerException);
+        Log.writeTxt(customerException);
         return Result.exception(customerException);
     }
 
@@ -27,19 +27,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<Object> exceptionHandler(Exception exception) {
 
-        writeToLog(exception);
+        Log.writeTxt(exception);
         return Result.exception(exception);
     }
 
-    private static void writeToLog(Exception exception) {
-
-        StringBuilder log = new StringBuilder(exception.getClass().toString());
-        StackTraceElement[] trace = exception.getStackTrace();
-
-        for (StackTraceElement traceElement : trace) {
-            log.append("    at").append(traceElement).append("\r\n");
-        }
-
-        Log.writeTxt(log.toString());
-    }
 }

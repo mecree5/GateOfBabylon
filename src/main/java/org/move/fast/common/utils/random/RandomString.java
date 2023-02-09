@@ -81,7 +81,7 @@ public class RandomString {
         try {
             str = new String(bArr, "GB2312");    //区位码组合成汉字
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
         return str;
     }
