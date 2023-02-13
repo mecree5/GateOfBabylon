@@ -1,7 +1,6 @@
 package org.move.fast.common.api.crawler.dabai;
 
 import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 import org.apache.http.Header;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -39,12 +38,14 @@ public class Vpn {
     //邀请码
     public static final String vpn_user_code = "";
 
-
-    public static void sendEmailCode(String email) {
+    public static boolean sendEmailCode(String email) {
         //现在需要验证邮箱和ip 使用x-forwarded-for伪装下即可
-        HttpResponse rsp = HttpRequest.post(vpn_url + vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute();
-        String body = rsp.body();
-        System.out.println(Cmd.colorString("邮件发送成功" + " 响应信息为" + Unicode.unicodeDecode(body), 32, 1));
+        String rsp = HttpRequest.post(vpn_url + vpn_emailCode_path).form("email", email).header("x-forwarded-for", IP.getRandomIp()).execute().body();
+        //{"ret":0}
+
+        System.out.println(Cmd.colorString("邮件发送成功" + " 响应信息为" + Unicode.unicodeDecode(rsp), 32, 1));
+
+        return false;
     }
 
     public static VpnUser register(String email, String name, String passwd, String emailCode) {
@@ -57,7 +58,7 @@ public class Vpn {
         body.put("passwd", passwd);
         body.put("repasswd", passwd);
         body.put("code", vpn_user_code);
-//        body.put("emailcode", emailCode);
+        //body.put("emailcode", emailCode);
 
         String answer = HttpReq.sendPost(vpn_url + vpn_register_path, head, body);
         String targetStr = "注册成功" + " 账号:" + email + " 密码:" + passwd + " 响应信息为" + Unicode.unicodeDecode(answer);
@@ -73,13 +74,11 @@ public class Vpn {
     }
 
     public static Map<String, String> login(VpnUser vpnUser) {
-        Map<String, String> head = new HashMap<>();
         Map<String, String> body = new HashMap<>();
-//        head.put("content-type", "application/x-www-form-urlencoded; charset=UTF-8");
         body.put("email", vpnUser.getEmail());
         body.put("passwd", vpnUser.getPassword());
         body.put("code", vpn_user_code);
-        return takeCookie(head, body);
+        return takeCookie(null, body);
     }
 
     public static Map<VpnTypeEnum, String> takeRssUrl(Map<String, String> cookie) {

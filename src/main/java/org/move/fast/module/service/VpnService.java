@@ -110,6 +110,11 @@ public class VpnService {
 
         for (VpnUser vpnUser : vpnUsers) {
 
+            //签到也为懒加载异步方式
+
+            //购买产品也为懒加载异步方式
+
+
             if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
                 List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
                 urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
