@@ -7,6 +7,8 @@ public enum ConfKeyEnum {
     vpn_rss_which,
 
     vpn_rss_repertory,
+
+    vpn_rss_down_num,
     ;
 
     public static boolean check(String str) {

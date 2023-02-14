@@ -11,13 +11,15 @@ CREATE TABLE `sys_conf`  (
   `upd_date` datetime(0) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `conf_key_uni`(`conf_key`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_conf
 -- ----------------------------
 INSERT INTO `sys_conf` VALUES (1, 'vpn_rss_repertory', '10', '默认库存数', NULL, NULL);
 INSERT INTO `sys_conf` VALUES (2, 'vpn_rss_which', '8', '获取第几个节点', NULL, NULL);
+INSERT INTO `sys_conf` VALUES (3, 'vpn_rss_down_num', '5', '每次下载几个', NULL, NULL);
+
 
 -- ----------------------------
 -- Table structure for vpn_user

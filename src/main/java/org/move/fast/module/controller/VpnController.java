@@ -2,10 +2,13 @@ package org.move.fast.module.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.move.fast.common.Exception.CustomerException;
+import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
+import org.move.fast.common.utils.IP;
+import org.move.fast.module.service.PushService;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +28,9 @@ public class VpnController {
 
     @Resource
     RssService rssService;
+
+    @Resource
+    PushService pushService;
 
     @GetMapping("/test")
     public Result<Object> test() {
@@ -53,7 +59,9 @@ public class VpnController {
 
 
     @RequestMapping(value = "/down/{clientName}", method = RequestMethod.GET)
-    public void down(HttpServletResponse response, @PathVariable String clientName) throws IOException {
+    public void down(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName) throws IOException {
+
+        pushService.pushToPerson(PushPlus.Template.html, "GateOfBabylon订阅提醒", IP.getIpAddByReq(request)+"获取了"+clientName);
 
         String type = VpnTypeEnum.checkNameAndGetType(clientName);
 

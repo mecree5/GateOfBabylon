@@ -18,6 +18,8 @@ mybatis-plus:
     id-type: 0
 
 gateOfBabylon:
+  notice:
+    push-plus-token:
   api:
     youdao:
       ocr:

@@ -44,7 +44,7 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
-        checkRssNum();
+        checkRssNumAndGetDownNum(0);
     }
 
     @Scheduled(cron = "0 10 1 * * ?")
@@ -85,11 +85,11 @@ public class VpnService {
         LocalDate now = LocalDate.now();
         LocalDateTime nowTime = LocalDateTime.now();
 
-        checkRssNum();
-
         String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
 
-        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit 5"));
+        int downNum = checkRssNumAndGetDownNum(Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_down_num.name())).get(0).getConfVal()));
+
+        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
         //签到为懒加载 异步方式
         rssService.checkInAsync(vpnUsers);
@@ -136,15 +136,23 @@ public class VpnService {
         return sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().lambda().eq(SysConf::getConfKey, key)) == 1;
     }
 
-    private void checkRssNum() {
+    private int checkRssNumAndGetDownNum(int downNum) {
 
-        int num = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").eq("status", "1").ne("last_used_date", LocalDate.now())).get(0).get("num")));
+        int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now())).get(0).get("num")));
 
         int repertory = Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0).getConfVal());
 
-        if (num < repertory) {
-            rssService.getRssUrlAsync(repertory - num);
+        if (haveNum > repertory + downNum){
+            return downNum;
         }
+
+        if (haveNum <= downNum){
+            rssService.getRssUrlAsync(repertory + haveNum);
+            return haveNum;
+        }
+
+        rssService.getRssUrlAsync(downNum + repertory - haveNum);
+        return downNum;
     }
 
 }

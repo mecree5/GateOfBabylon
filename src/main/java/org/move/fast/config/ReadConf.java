@@ -1,10 +1,10 @@
 package org.move.fast.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 
 /**
  * 只能读取application.yml
@@ -14,7 +14,7 @@ public class ReadConf {
 
     private static Environment environment;
 
-    @Autowired
+    @Resource
     Environment initEnvironment;
 
     public static String getConfValue(String key) {

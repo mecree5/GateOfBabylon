@@ -1,0 +1,22 @@
+package org.move.fast.module.service;
+
+import org.move.fast.common.api.push.PushPlus;
+import org.move.fast.config.ReadConf;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author YinShiJie
+ * @description: 作为服务工具类被调用  切记不要导致循环依赖
+ * @date 2023/2/14 14:42
+ */
+@Service
+public class PushService {
+
+    private static final String token = ReadConf.getConfValue("gateOfBabylon.notice.push-plus-token");
+
+    @Async("asyncTaskExecutor")
+    public boolean pushToPerson(PushPlus.Template template, String title, String content){
+        return PushPlus.pushToPerson(token, template, title, content);
+    }
+}
