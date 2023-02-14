@@ -3,6 +3,7 @@ package org.move.fast.module.service;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.move.fast.common.api.crawler.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
@@ -17,11 +18,12 @@ import org.move.fast.module.mapper.auto.VpnUserMapper;
 import org.move.fast.module.mapper.auto.VpnVmessMapper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -42,8 +44,25 @@ public class RssService {
     @Resource
     SysConfMapper sysConfMapper;
 
-    @Resource
-    private PlatformTransactionManager txm;
+//    @Resource
+//    private PlatformTransactionManager txm;
+
+    @Async("asyncTaskExecutor")
+    public void checkInAsync(List<VpnUser> vpnUsers) {
+
+        for (VpnUser vpnUser : vpnUsers) {
+
+            String cookie = Vpn.login(vpnUser);
+            if (StrUtil.isBlank(cookie)) {
+                continue;
+            }
+
+            if (Vpn.checkIn(cookie, vpnUser)) {
+                vpnUser.setUpdDate(LocalDateTime.now());
+                vpnUserMapper.updateById(vpnUser);
+            }
+        }
+    }
 
     /**
      * @description: 异步获取订阅地址
@@ -76,18 +95,28 @@ public class RssService {
 
     private String getRssUrl(boolean isUse) {
 
-        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
-        String which = sysConf.getConfVal();
+        String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
 
-        Random random = new Random();
         String username = RandomString.getRandomString(4);
         String password = RandomString.getRandomString(10);
-        String email = username + random.nextInt(1000) + "@qq.com";
+        String email = username + new Random().nextInt(1000) + "@qq.com";
 
         VpnUser vpnUser = Vpn.register(email, username, password, null);
-        Map<String, String> cookie = Vpn.login(vpnUser);
-        Vpn.buy(cookie, vpnUser);
-        Vpn.checkIn(cookie, vpnUser);
+
+        if (vpnUser == null) {
+            return null;
+        }
+
+        String cookie = Vpn.login(vpnUser);
+
+        if (StrUtil.isBlank(cookie)) {
+            return null;
+        }
+
+        if (Vpn.buy(cookie, vpnUser)) {
+            Vpn.checkIn(cookie, vpnUser);
+        }
+
         vpnUser.setStatus("1");
         vpnUser.setLastUpdRssWhich(which);
         //避免今天申请的账号用不了
@@ -99,6 +128,10 @@ public class RssService {
 
         //拿订阅地址
         Map<VpnTypeEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
+
+        if (CollectionUtils.isEmpty(rssUrls)) {
+            return null;
+        }
 
         StringBuilder rssUrlStr = new StringBuilder();
 

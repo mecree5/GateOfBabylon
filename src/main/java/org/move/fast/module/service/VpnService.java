@@ -25,7 +25,6 @@ import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class VpnService {
@@ -48,17 +47,6 @@ public class VpnService {
         checkRssNum();
     }
 
-    @Scheduled(cron = "0 10 0 * * ?")
-    public void checkIn() {
-        List<VpnUser> is_check = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().ne(VpnUser::getLastCheckDate, LocalDate.now()).eq(VpnUser::getStatus, "1"));
-        for (VpnUser vpnUser : is_check) {
-            Map<String, String> login = Vpn.login(vpnUser);
-            Vpn.checkIn(login, vpnUser);
-            vpnUser.setUpdDate(LocalDateTime.now());
-            vpnUserMapper.updateById(vpnUser);
-        }
-    }
-
     @Scheduled(cron = "0 10 1 * * ?")
     public void buy() {
 
@@ -67,31 +55,27 @@ public class VpnService {
         List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1"));
 
         for (VpnUser vpnUser : vpnUsers) {
-            LocalDate lastBuyTime = vpnUser.getLastBuyTime();
-            if (LocalDateTimeUtil.betweenPeriod(lastBuyTime, LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
-                Map<String, String> login = Vpn.login(vpnUser);
-                Vpn.buy(login, vpnUser);
-                vpnUser.setUpdDate(LocalDateTime.now());
-                vpnUserMapper.updateById(vpnUser);
-            } else {
-                vpnUser.setUpdDate(LocalDateTime.now());
-                vpnUser.setStatus("0");
-                vpnUserMapper.updateById(vpnUser);
+
+            if (LocalDateTimeUtil.betweenPeriod(vpnUser.getLastBuyTime(), LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
+                String cookie = Vpn.login(vpnUser);
+
+                if (StrUtil.isBlank(cookie)) {
+                    continue;
+                }
+
+                if (Vpn.buy(cookie, vpnUser)) {
+                    vpnUser.setUpdDate(LocalDateTime.now());
+                    vpnUserMapper.updateById(vpnUser);
+                }
+
+                continue;
+
             }
 
-        }
-    }
+            vpnUser.setUpdDate(LocalDateTime.now());
+            vpnUser.setStatus("0");
+            vpnUserMapper.updateById(vpnUser);
 
-    private void checkRssNum() {
-
-        List<Map<String, Object>> maps = vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").eq("status", "1").ne("last_used_date", LocalDate.now()));
-        int num = Integer.parseInt(String.valueOf(maps.get(0).get("num")));
-
-        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0);
-        int repertory = Integer.parseInt(sysConf.getConfVal());
-
-        if (num < repertory) {
-            rssService.getRssUrlAsync(repertory - num);
         }
     }
 
@@ -103,26 +87,24 @@ public class VpnService {
 
         checkRssNum();
 
-        SysConf sysConf = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0);
-        String which = sysConf.getConfVal();
+        String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
 
         List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit 5"));
 
+        //签到为懒加载 异步方式
+        rssService.checkInAsync(vpnUsers);
+
         for (VpnUser vpnUser : vpnUsers) {
 
-            //签到也为懒加载异步方式
-
-            //购买产品也为懒加载异步方式
-
-
             if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
-                List<VpnVmess> vpnVmesses = vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
-                urls.append(vpnVmesses.get(0).getVmessUrl()).append("\r\n");
+
+                urls.append(vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId())).get(0).getVmessUrl()).append("\r\n");
 
                 vpnUser.setLastUsedDate(now);
                 vpnUser.setUpdDate(nowTime);
                 vpnUserMapper.updateById(vpnUser);
                 continue;
+
             }
 
             //获取节点变化 懒加载方式
@@ -146,11 +128,23 @@ public class VpnService {
     }
 
     public boolean upSet(String key, String value) {
+
         SysConf sysConf = new SysConf();
         sysConf.setUpdDate(LocalDateTime.now());
         sysConf.setConfVal(value);
-        int conf_key = sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().lambda().eq(SysConf::getConfKey, key));
-        return conf_key == 1;
+
+        return sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().lambda().eq(SysConf::getConfKey, key)) == 1;
+    }
+
+    private void checkRssNum() {
+
+        int num = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").eq("status", "1").ne("last_used_date", LocalDate.now())).get(0).get("num")));
+
+        int repertory = Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0).getConfVal());
+
+        if (num < repertory) {
+            rssService.getRssUrlAsync(repertory - num);
+        }
     }
 
 }
