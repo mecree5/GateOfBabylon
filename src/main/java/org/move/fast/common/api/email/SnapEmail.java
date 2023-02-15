@@ -1,4 +1,4 @@
-package org.move.fast.common.api.crawler.email;
+package org.move.fast.common.api.email;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;

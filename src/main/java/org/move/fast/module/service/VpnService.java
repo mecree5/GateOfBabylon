@@ -8,7 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import org.move.fast.common.api.crawler.dabai.Vpn;
+import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.module.entity.auto.SysConf;

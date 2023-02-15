@@ -5,7 +5,7 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.move.fast.common.api.crawler.dabai.Vpn;
+import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.common.utils.HttpReq;

@@ -3,17 +3,16 @@ package org.move.fast.module.entity.auto;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
  * <p>
- *
+ * 
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-08
+ * @since 2023-02-15
  */
 @TableName("sys_conf")
 public class SysConf implements Serializable {
@@ -49,7 +48,6 @@ public class SysConf implements Serializable {
     public void setId(Integer id) {
         this.id = id;
     }
-
     public String getConfKey() {
         return confKey;
     }
@@ -57,7 +55,6 @@ public class SysConf implements Serializable {
     public void setConfKey(String confKey) {
         this.confKey = confKey;
     }
-
     public String getConfVal() {
         return confVal;
     }
@@ -65,7 +62,6 @@ public class SysConf implements Serializable {
     public void setConfVal(String confVal) {
         this.confVal = confVal;
     }
-
     public String getConfRemark() {
         return confRemark;
     }
@@ -73,7 +69,6 @@ public class SysConf implements Serializable {
     public void setConfRemark(String confRemark) {
         this.confRemark = confRemark;
     }
-
     public LocalDateTime getCrtDate() {
         return crtDate;
     }
@@ -81,7 +76,6 @@ public class SysConf implements Serializable {
     public void setCrtDate(LocalDateTime crtDate) {
         this.crtDate = crtDate;
     }
-
     public LocalDateTime getUpdDate() {
         return updDate;
     }
@@ -93,12 +87,12 @@ public class SysConf implements Serializable {
     @Override
     public String toString() {
         return "SysConf{" +
-                "id=" + id +
-                ", confKey=" + confKey +
-                ", confVal=" + confVal +
-                ", confRemark=" + confRemark +
-                ", crtDate=" + crtDate +
-                ", updDate=" + updDate +
-                "}";
+            "id=" + id +
+            ", confKey=" + confKey +
+            ", confVal=" + confVal +
+            ", confRemark=" + confRemark +
+            ", crtDate=" + crtDate +
+            ", updDate=" + updDate +
+        "}";
     }
 }

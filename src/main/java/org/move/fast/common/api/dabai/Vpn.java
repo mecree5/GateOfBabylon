@@ -1,4 +1,4 @@
-package org.move.fast.common.api.crawler.dabai;
+package org.move.fast.common.api.dabai;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;

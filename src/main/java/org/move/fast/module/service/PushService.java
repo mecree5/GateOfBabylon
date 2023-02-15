@@ -16,7 +16,7 @@ public class PushService {
     private static final String token = ReadConf.getConfValue("gateOfBabylon.notice.push-plus-token");
 
     @Async("asyncTaskExecutor")
-    public boolean pushToPerson(PushPlus.Template template, String title, String content){
-        return PushPlus.pushToPerson(token, template, title, content);
+    public void pushToPerson(PushPlus.Template template, String title, String content){
+        PushPlus.pushToPerson(token, template, title, content);
     }
 }

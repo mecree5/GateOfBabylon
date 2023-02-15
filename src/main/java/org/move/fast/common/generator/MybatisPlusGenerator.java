@@ -35,6 +35,8 @@ public class MybatisPlusGenerator {
 
                 })
                 .templateConfig(builder -> builder.controller("")) //不生成controller
+                .templateConfig(builder -> builder.service(""))
+                .templateConfig(builder -> builder.serviceImpl(""))
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
     }
