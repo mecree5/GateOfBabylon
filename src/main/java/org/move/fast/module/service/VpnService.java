@@ -5,6 +5,7 @@ import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -31,6 +32,9 @@ public class VpnService {
 
     @Resource
     RssService rssService;
+
+    @Resource
+    PushService pushService;
 
     @Resource
     VpnUserMapper vpnUserMapper;
@@ -79,11 +83,11 @@ public class VpnService {
         }
     }
 
-    public String getRss(String clientType) {
+    public String getRss(String clientType, String clientName, String remoteAdd) {
 
+        LocalDateTime nowTime = LocalDateTime.now();
         StringBuilder urls = new StringBuilder();
         LocalDate now = LocalDate.now();
-        LocalDateTime nowTime = LocalDateTime.now();
 
         String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
 
@@ -109,14 +113,13 @@ public class VpnService {
 
             //获取节点变化 懒加载方式
             String rssUrls = vpnUser.getRssUrl();
-            String clientName = VpnTypeEnum.checkTypeAndGetName(clientType);
             String strCache = rssUrls.substring(rssUrls.indexOf(clientName + ":"));
             String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, strCache.substring(clientName.length() + 1, strCache.indexOf(";")));
             urls.append(vmess).append("\r\n");
 
             vpnUser.setLastUsedDate(now);
             vpnUser.setUpdDate(nowTime);
-            vpnUser.setLastUpdRssWhich(clientType);
+            vpnUser.setLastUpdRssWhich(which);
             vpnUserMapper.updateById(vpnUser);
             VpnVmess vpnVmess = new VpnVmess();
             vpnVmess.setUpdDate(nowTime);
@@ -124,6 +127,16 @@ public class VpnService {
             vpnVmessMapper.update(vpnVmess, new UpdateWrapper<VpnVmess>().lambda().eq(VpnVmess::getUserId, vpnUser.getId()).eq(VpnVmess::getClientType, clientType));
 
         }
+
+        JSONObject pushMsg = new JSONObject();
+        pushMsg.put("请求地址", remoteAdd);
+        pushMsg.put("获取类型", clientName);
+        pushMsg.put("下载个数", downNum);
+        pushMsg.put("花费时间", LocalDateTimeUtil.between(nowTime, LocalDateTime.now()));
+        pushMsg.put("请求时间", nowTime);
+
+        pushService.pushToPerson("GateOfBabylon订阅提醒", pushMsg);
+
         return Base64.encode(urls.toString());
     }
 
@@ -142,11 +155,11 @@ public class VpnService {
 
         int repertory = Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0).getConfVal());
 
-        if (haveNum > repertory + downNum){
+        if (haveNum > repertory + downNum) {
             return downNum;
         }
 
-        if (haveNum <= downNum){
+        if (haveNum <= downNum) {
             rssService.getRssUrlAsync(repertory + haveNum);
             return haveNum;
         }
