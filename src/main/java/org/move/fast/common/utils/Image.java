@@ -1,6 +1,6 @@
 package org.move.fast.common.utils;
 
-import sun.misc.BASE64Encoder;
+import cn.hutool.core.codec.Base64;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -34,7 +34,7 @@ public class Image {
         byte[] by = outputStream.toByteArray();
         System.out.println(Arrays.toString(by));
 
-        return "data:image/png;base64," + new BASE64Encoder().encode(outputStream.toByteArray());
+        return "data:image/png;base64," + Base64.encode(outputStream.toByteArray());
     }
 
 }

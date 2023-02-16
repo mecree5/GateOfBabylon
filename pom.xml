@@ -6,16 +6,22 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.5</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
-    <groupId>org.utils</groupId>
-    <artifactId>springboot_utils</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>utils</name>
-    <description>utils</description>
+
+    <!-- 打包镜像 mvn compile jib:build-->
+    <name>GateOfBabylon</name>
+    <version>2.0.1</version>
+    <groupId>org.GateOfBabylon</groupId>
+    <artifactId>GateOfBabylon</artifactId>
+    <description>GateOfBabylon</description>
+
     <properties>
         <java.version>1.8</java.version>
+        <docker.username>mecree</docker.username>
+        <docker.password>test</docker.password>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -152,7 +158,9 @@
     </dependencies>
 
     <build>
+
         <plugins>
+
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -165,6 +173,66 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <!--from节点用来设置镜像的基础镜像，相当于Docerkfile中的FROM关键字-->
+                    <from>
+                        <!--基础镜像名称(建议使用国内公开镜像，下载速度快，更稳定) -->
+                        <image>openjdk:8-jdk-alpine</image>
+                    </from>
+                    <to>
+                        <!--镜像名称和tag，使用了mvn内置变量${project.version}，表示当前工程的version-->
+                        <image>docker.io/mecree/gate_of_babylon</image>
+                        <tags>
+                            <tag>gate_of_babylon-${project.version}</tag>
+                        </tags>
+                        <auth>
+                            <username>${docker.username}</username>
+                            <password>${docker.password}</password>
+                        </auth>
+                    </to>
+                    <!--容器相关的属性-->
+                    <container>
+                        <!--jvm内存参数-->
+                        <jvmFlags>
+                            <jvmFlag>-Xms4g</jvmFlag>
+                            <jvmFlag>-Xmx4g</jvmFlag>
+                        </jvmFlags>
+                        <!--要暴露的端口-->
+                        <ports>
+                            <port>8899</port>
+                        </ports>
+                        <mainClass>org.move.fast.MoveFastApplication</mainClass>
+                    </container>
+                </configuration>
+
+<!--                &lt;!&ndash;绑定到maven lifecycle&ndash;&gt;-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>build</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+            </plugin>
+
         </plugins>
     </build>
 
