@@ -35,6 +35,7 @@ public class Log {
 
     public static void printAndWrite(Exception exception) {
         StringBuilder log = new StringBuilder(exception.getClass().toString());
+        log.append(":").append(exception.getMessage());
         log.append("\r\n");
         StackTraceElement[] trace = exception.getStackTrace();
 

@@ -21,20 +21,20 @@ public class CustomerException extends RuntimeException {
         msg = message;
     }
 
-    public CustomerException(RetCodeEnum message) {
-        super();
-        this.code = message.getCode();
-        this.msg = message.getMsg();
+    public CustomerException(RetCodeEnum retCodeEnum) {
+        super(retCodeEnum.getMsg());
+        this.code = retCodeEnum.getCode();
+        this.msg = retCodeEnum.getMsg();
     }
 
-    public CustomerException(RetCodeEnum message, String fill) {
-        super();
-        this.code = message.getCode();
-        this.msg = message.getMsg() + fill;
+    public CustomerException(RetCodeEnum retCodeEnum, String fill) {
+        super(retCodeEnum.getMsg() + fill);
+        this.code = retCodeEnum.getCode();
+        this.msg = retCodeEnum.getMsg() + fill;
     }
 
     public CustomerException(String retCd, String msgDes) {
-        super();
+        super(msgDes);
         this.code = retCd;
         this.msg = msgDes;
     }
