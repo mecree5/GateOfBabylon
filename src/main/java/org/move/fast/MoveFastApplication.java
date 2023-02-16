@@ -16,9 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class MoveFastApplication {
 
     public static void main(String[] args) {
-        //设置本地代理
-        System.setProperty("socksProxyHost", "127.0.0.1");
-        System.setProperty("socksProxyPort", "10808");
+
         SpringApplication.run(MoveFastApplication.class, args);
     }
 
