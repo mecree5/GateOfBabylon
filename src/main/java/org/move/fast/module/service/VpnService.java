@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
+import org.move.fast.config.ReadConf;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -48,6 +49,9 @@ public class VpnService {
 
     @PostConstruct
     public void init() {
+        //设置本地代理
+        System.setProperty("socksProxyHost", "127.0.0.1");
+        System.setProperty("socksProxyPort", ReadConf.getConfValue("gateOfBabylon.proxy"));
         checkRssNumAndGetDownNum(0);
     }
 
