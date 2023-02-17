@@ -44,9 +44,6 @@ public class RssService {
     @Resource
     SysConfMapper sysConfMapper;
 
-//    @Resource
-//    private PlatformTransactionManager txm;
-
     @Async("asyncTaskExecutor")
     public void checkInAsync(List<VpnUser> vpnUsers) {
 
@@ -95,7 +92,7 @@ public class RssService {
 
     private String getRssUrl(boolean isUse) {
 
-        String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
+        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
         String username = RandomString.getRandomString(4);
         String password = RandomString.getRandomString(10);
@@ -156,21 +153,6 @@ public class RssService {
         vpnUserId.setRssUrl(rssUrlStr.toString());
         vpnUserId.setUpdDate(LocalDateTime.now());
         vpnUserMapper.updateById(vpnUserId);
-
-//        //可以考虑用事务
-//        Object obj;
-//        TransactionTemplate txt = new TransactionTemplate(txm);
-//        obj = txt.execute((TransactionCallback<Object>) transactionStatus -> {
-//            try {
-//
-//                return null;
-//            } catch (Exception e){
-//
-//                return null;
-//            }
-//        });
-
-
         return rssUrlStr.toString();
     }
 

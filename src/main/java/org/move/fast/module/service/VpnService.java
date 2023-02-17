@@ -9,9 +9,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
-import org.move.fast.config.ReadConf;
+import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -88,15 +89,21 @@ public class VpnService {
 
     public String getRss(String clientType, String clientName, String remoteAdd) {
 
+        int downNum = checkRssNumAndGetDownNum(Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_down_num.name())).getConfVal()));
+        if (downNum == 0) {
+            throw new CustomerException(RetCodeEnum.too_much_req);
+        }
+
         LocalDateTime nowTime = LocalDateTime.now();
         StringBuilder urls = new StringBuilder();
         LocalDate now = LocalDate.now();
 
-        String which = sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).get(0).getConfVal();
+        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
-        int downNum = checkRssNumAndGetDownNum(Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_down_num.name())).get(0).getConfVal()));
-
-        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
+        //避免因为并发情况下导致的数据未初始化完成而被使用
+        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1")
+                .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "")
+                .ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
         //签到为懒加载 异步方式
         rssService.checkInAsync(vpnUsers);
@@ -156,7 +163,7 @@ public class VpnService {
 
         int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now())).get(0).get("num")));
 
-        int repertory = Integer.parseInt(sysConfMapper.selectList(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).get(0).getConfVal());
+        int repertory = Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).getConfVal());
 
         if (haveNum > repertory + downNum) {
             return downNum;
