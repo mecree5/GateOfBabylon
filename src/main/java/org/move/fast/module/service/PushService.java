@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class PushService {
 
-    private static final String token = ReadConf.getConfValue("gateOfBabylon.notice.push-plus-token");
+    private static final String token = ReadConf.getConfValue("gateOfBabylon.api.notice.push-plus-token");
 
     @Async("asyncTaskExecutor")
     public void pushToPerson(PushPlus.Template template, String title, String content) {

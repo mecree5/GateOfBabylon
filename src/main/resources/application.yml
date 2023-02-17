@@ -18,10 +18,12 @@ mybatis-plus:
     id-type: 0
 
 gateOfBabylon:
-  proxy: 10808
-  notice:
-    push-plus-token:
+  proxy:
+    host: 127.0.0.1
+    port: 10808
   api:
+    notice:
+      push-plus-token:
     youdao:
       ocr:
         key:

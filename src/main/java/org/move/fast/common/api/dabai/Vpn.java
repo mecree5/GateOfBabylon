@@ -28,7 +28,7 @@ public class Vpn {
 
     private static final String err_ret_code = "0";
 
-    private static final String vpn_url = "https://www.dabai.in";
+    private static final String vpn_url = "https://b.db01.in/";
     private static final String vpn_register_path = "/auth/register";
     private static final String vpn_emailCode_path = "/auth/send";
     private static final String vpn_login_path = "/auth/login";
