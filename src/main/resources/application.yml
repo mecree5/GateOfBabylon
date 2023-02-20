@@ -1,11 +1,12 @@
 server:
   port: 8080
+
+#切换配置
 spring:
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
-    url: jdbc:mysql://url/gateofbabylon?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+  profiles:
+    active: dev
+#    active: prod
+
 mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
   type-aliases-package: org.move.fast.module.entity
@@ -16,6 +17,16 @@ mybatis-plus:
   global-config:
     db-column-underline: true
     id-type: 0
+
+#配置分区
+---
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/gateofbabylon?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
 
 gateOfBabylon:
   proxy:
@@ -32,3 +43,28 @@ gateOfBabylon:
         key:
         secret:
 
+---
+spring:
+  profiles: prod
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://prod_url:port/gateofbabylon?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
+
+gateOfBabylon:
+  proxy:
+    host: 127.0.0.1
+    port: 10808
+  api:
+    notice:
+      push-plus-token:
+    youdao:
+      ocr:
+        key:
+        secret:
+      translate:
+        key:
+        secret:
+
+---
