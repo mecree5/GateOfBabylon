@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
@@ -60,31 +61,42 @@ public class VpnService {
 
         DateTime lastMonth = DateUtil.lastMonth();
 
-        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1"));
+        //分页查询(一次1000条)
+        int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1")).get(0).get("num")));
 
-        for (VpnUser vpnUser : vpnUsers) {
+        int size = count / 1000 + 1;
 
-            if (LocalDateTimeUtil.betweenPeriod(vpnUser.getLastBuyTime(), LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
-                String cookie = Vpn.login(vpnUser);
+        for (int i = 1; i <= size; i++) {
 
-                if (StrUtil.isBlank(cookie)) {
+            Page<VpnUser> vpnUserPage = new Page<>(i,1000);
+
+            Page<VpnUser> vpnUsers = vpnUserMapper.selectPage(vpnUserPage, new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1"));
+
+            for (VpnUser vpnUser : vpnUsers.getRecords()) {
+
+                if (LocalDateTimeUtil.betweenPeriod(vpnUser.getLastBuyTime(), LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
+                    String cookie = Vpn.login(vpnUser);
+
+                    if (StrUtil.isBlank(cookie)) {
+                        continue;
+                    }
+
+                    if (Vpn.buy(cookie, vpnUser)) {
+                        vpnUser.setUpdDate(LocalDateTime.now());
+                        vpnUserMapper.updateById(vpnUser);
+                    }
+
                     continue;
+
                 }
 
-                if (Vpn.buy(cookie, vpnUser)) {
-                    vpnUser.setUpdDate(LocalDateTime.now());
-                    vpnUserMapper.updateById(vpnUser);
-                }
-
-                continue;
+                vpnUser.setUpdDate(LocalDateTime.now());
+                vpnUser.setStatus("0");
+                vpnUserMapper.updateById(vpnUser);
 
             }
-
-            vpnUser.setUpdDate(LocalDateTime.now());
-            vpnUser.setStatus("0");
-            vpnUserMapper.updateById(vpnUser);
-
         }
+
     }
 
     public String getRss(String clientType, String clientName, String remoteAdd) {
