@@ -11,7 +11,7 @@
 
     <!-- 打包镜像 mvn compile jib:build-->
     <name>GateOfBabylon</name>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <groupId>org.GateOfBabylon</groupId>
     <artifactId>GateOfBabylon</artifactId>
     <description>GateOfBabylon</description>
@@ -138,6 +138,10 @@
                         <jvmFlags>
                             <jvmFlag>-Xms4g</jvmFlag>
                             <jvmFlag>-Xmx4g</jvmFlag>
+                        </jvmFlags>
+                        <!--jvm时区-->
+                        <jvmFlags>
+                            <jvmFlag>-Duser.timezone=GMT+08</jvmFlag>
                         </jvmFlags>
                         <!--要暴露的端口-->
                         <ports>
