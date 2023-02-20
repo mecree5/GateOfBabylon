@@ -9,7 +9,7 @@ import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.common.utils.HttpReq;
-import org.move.fast.common.utils.random.RandomString;
+import org.move.fast.common.utils.string.RandomString;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;

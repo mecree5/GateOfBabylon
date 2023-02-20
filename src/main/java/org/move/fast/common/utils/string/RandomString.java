@@ -1,4 +1,4 @@
-package org.move.fast.common.utils.random;
+package org.move.fast.common.utils.string;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;

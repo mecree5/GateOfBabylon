@@ -1,7 +1,5 @@
 package org.move.fast.common.utils;
 
-import cn.hutool.core.util.StrUtil;
-import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -10,6 +8,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.util.CollectionUtils;
 
 import java.io.*;
@@ -17,7 +16,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author YinShiJie
@@ -74,11 +76,11 @@ public class HttpReq {
 
 
     public static String sendGet(String reqUrl, Map<String, String> param) {
-        return sendGet(reqUrl,param,null);
+        return sendGet(reqUrl, param, null);
     }
 
     public static String sendGet(Map<String, String> header, String reqUrl) {
-        return sendGet(reqUrl,null,header);
+        return sendGet(reqUrl, null, header);
     }
 
     public static String sendGet(String reqUrl) {
@@ -91,7 +93,7 @@ public class HttpReq {
 
         StringBuilder url = new StringBuilder(reqUrl);
 
-        if (!CollectionUtils.isEmpty(param)){
+        if (!CollectionUtils.isEmpty(param)) {
             url.append("?");
             for (Map.Entry<String, String> entry : param.entrySet()) {
                 url.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
@@ -103,7 +105,7 @@ public class HttpReq {
 
         try {
 
-            realUrl = new URL(url.substring(0,url.length()-1));
+            realUrl = new URL(url.substring(0, url.length() - 1));
             // 打开和URL之间的连接
             connection = realUrl.openConnection();
             //设置超时时间

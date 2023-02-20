@@ -1,13 +1,11 @@
 package org.move.fast.module.controller;
 
-import org.apache.commons.io.IOUtils;
+import cn.hutool.core.io.IoUtil;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.entity.ConfKeyEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.VpnTypeEnum;
-import org.move.fast.module.service.PushService;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -68,7 +66,7 @@ public class VpnController {
         String headerValue = String.format("attachment; filename=\"%s\"", "rss.txt");
         response.setHeader(headerKey, headerValue);
 
-        IOUtils.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        IoUtil.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
         response.flushBuffer();
     }
 
