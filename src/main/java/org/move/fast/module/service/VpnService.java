@@ -14,9 +14,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.api.push.PushPlus;
-import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
+import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.utils.Log;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
@@ -60,43 +60,67 @@ public class VpnService {
         checkRssNumAndGetDownNum(0);
     }
 
-    @Scheduled(cron = "0 10 1 * * ?")
-    public void buy() {
+    @Scheduled(cron = "0 10 0 * * ?")
+    public void expire() {
 
         DateTime now = DateTime.now();
-        Log.printAndWrite("开始执行VpnService.buy定时任务,时间为" + now);
-
+        Log.printAndWrite("开始执行VpnService.expire定时任务,时间为" + now);
         DateTime lastMonth = DateUtil.lastMonth();
 
         //分页查询(一次1000条)
         int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())).get(0).get("num")));
 
-        int size = count / 1000 + 1;
+        int pageSize = count / 1000 + 1;
 
-        for (int i = 1; i <= size; i++) {
+        for (int i = 1; i <= pageSize; i++) {
 
             Page<VpnUser> vpnUserPage = new Page<>(i, 1000);
 
             Page<VpnUser> vpnUsers = vpnUserMapper.selectPage(vpnUserPage, new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey()));
 
             for (VpnUser vpnUser : vpnUsers.getRecords()) {
+                //账号过期
+                vpnUser.setUpdDate(LocalDateTime.now());
+                vpnUser.setStatus(DBFieldEnum.vpn_user_status_expire.getKey());
+                vpnUserMapper.updateById(vpnUser);
+            }
+        }
+        Log.printAndWrite("完成执行VpnService.expire定时任务,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
+    }
+
+    @Scheduled(cron = "0 10 2 * * ?")
+    public void buy() {
+
+        DateTime now = DateTime.now();
+        Log.printAndWrite("开始执行VpnService.buy定时任务,时间为" + now);
+        DateTime lastMonth = DateUtil.lastMonth();
+
+        //分页查询(一次1000条)
+        int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_expire.getKey())).get(0).get("num")));
+
+        int pageSize = count / 1000 + 1;
+
+        for (int i = 1; i <= pageSize; i++) {
+
+            Page<VpnUser> vpnUserPage = new Page<>(i, 1000);
+
+            Page<VpnUser> vpnUsers = vpnUserMapper.selectPage(vpnUserPage, new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_expire.getKey()));
+
+            for (VpnUser vpnUser : vpnUsers.getRecords()) {
 
                 if (LocalDateTimeUtil.betweenPeriod(vpnUser.getLastBuyTime(), LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
                     String cookie = Vpn.login(vpnUser);
-
                     if (StrUtil.isBlank(cookie)) {
                         continue;
                     }
-
                     if (Vpn.buy(cookie, vpnUser)) {
+                        //账号恢复正常
+                        vpnUser.setStatus(DBFieldEnum.vpn_user_status_normal.getKey());
                         vpnUser.setUpdDate(LocalDateTime.now());
                         vpnUserMapper.updateById(vpnUser);
                     }
-
                     continue;
-
                 }
-
                 //多次未购买成功的直接当作账号注销处理
                 vpnUser.setUpdDate(LocalDateTime.now());
                 vpnUser.setStatus(DBFieldEnum.vpn_user_status_logout.getKey());
@@ -105,7 +129,6 @@ public class VpnService {
             }
         }
         Log.printAndWrite("完成执行VpnService.buy定时任务,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
-
     }
 
     public String getRss(String clientType, String clientName, String remoteAdd) {

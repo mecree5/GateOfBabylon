@@ -1,6 +1,5 @@
 package org.move.fast.module.service;
 
-import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.config.ReadConf;
 import org.springframework.scheduling.annotation.Async;
