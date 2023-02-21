@@ -13,7 +13,6 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
-import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
@@ -182,16 +181,14 @@ public class VpnService {
 
         }
 
-        JSONObject pushMsg = new JSONObject();
-        pushMsg.put("请求地址", remoteAdd);
-        pushMsg.put("获取类型", clientName);
-        pushMsg.put("下载个数", downNum);
-        pushMsg.put("花费时间", LocalDateTimeUtil.between(nowTime, LocalDateTime.now()));
+        JSONObject pushMsg = new JSONObject(true);
         pushMsg.put("请求时间", nowTime);
-        String pushMsgStr = pushMsg.toJSONString();
+        pushMsg.put("花费时间", LocalDateTimeUtil.between(nowTime, LocalDateTime.now()));
+        pushMsg.put("下载个数", downNum);
+        pushMsg.put("获取类型", clientName);
+        pushMsg.put("请求地址", remoteAdd);
 
-        pushService.pushToPerson(PushPlus.Template.json, "GateOfBabylon订阅提醒", pushMsgStr);
-        Log.printAndWrite(pushMsgStr);
+        pushService.getIpInfoAndPushToPerson(remoteAdd, "GateOfBabylon订阅提醒", pushMsg);
 
         return Base64.encode(urls.toString());
     }
