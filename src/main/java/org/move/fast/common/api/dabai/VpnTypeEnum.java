@@ -1,6 +1,7 @@
-package org.move.fast.common.entity;
+package org.move.fast.common.api.dabai;
 
 import org.move.fast.common.Exception.CustomerException;
+import org.move.fast.common.entity.RetCodeEnum;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -21,11 +21,11 @@ public class Cmd {
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(getFormatLogString("[ 红色 ]", 31, 0));
-//        System.out.println(getFormatLogString("[ 黄色 ]", 32, 0));
-//        System.out.println(getFormatLogString("[ 橙色 ]", 33, 0));
-//        System.out.println(getFormatLogString("[ 蓝色 ]", 34, 0));
-//        System.out.println(getFormatLogString("[ 紫色 ]", 35, 0));
-//        System.out.println(getFormatLogString("[ 绿色 ]", 36, 0));
+//        System.out.println(colorString("[ 红色 ]", 31, 0));
+//        System.out.println(colorString("[ 黄色 ]", 32, 0));
+//        System.out.println(colorString("[ 橙色 ]", 33, 0));
+//        System.out.println(colorString("[ 蓝色 ]", 34, 0));
+//        System.out.println(colorString("[ 紫色 ]", 35, 0));
+//        System.out.println(colorString("[ 绿色 ]", 36, 0));
 //    }
 }

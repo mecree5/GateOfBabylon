@@ -37,7 +37,8 @@ CREATE TABLE `vpn_user`  (
   `last_buy_time` date NULL DEFAULT NULL COMMENT '上次购买时间',
   `crt_date` datetime(0) NULL DEFAULT NULL,
   `upd_date` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `last_used_date_idx` (`last_used_date`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -55,7 +56,8 @@ CREATE TABLE `vpn_vmess`  (
   `client_type` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '客户端类型(1-v2ray,2-kitsunebi,3-clash,4-shadowrocket,5-Quantumult,6-QuantumultX)',
   `crt_date` datetime(0) NULL DEFAULT NULL,
   `upd_date` datetime(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `user_id_idx` (`user_id`) USING BTREE
 ) ENGINE = MyISAM AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------

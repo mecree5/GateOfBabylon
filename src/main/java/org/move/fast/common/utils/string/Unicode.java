@@ -14,7 +14,7 @@ public class Unicode {
     public static String unicodeDecode(String unicodeString) {
         char aChar;
         int len = unicodeString.length();
-        StringBuffer outBuffer = new StringBuffer(len);
+        StringBuilder outBuffer = new StringBuilder(len);
         for (int x = 0; x < len; ) {
             aChar = unicodeString.charAt(x++);
             if (aChar == '\\') {
@@ -56,7 +56,7 @@ public class Unicode {
                                 break;
                             default:
                                 throw new IllegalArgumentException(
-                                        "Malformed   \\uxxxx   encoding.");
+                                        "Malformed   \\unicode   encoding.");
                         }
                     }
                     outBuffer.append((char) value);

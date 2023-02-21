@@ -21,9 +21,4 @@ public class PushService {
         PushPlus.pushToPerson(token, template, title, content);
     }
 
-    @Async("asyncTaskExecutor")
-    public void pushToPerson(String title, JSONObject content) {
-        PushPlus.pushToPerson(token, PushPlus.Template.json, title, content.toJSONString());
-    }
-
 }

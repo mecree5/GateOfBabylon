@@ -2,6 +2,7 @@ package org.move.fast.module.service;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -12,8 +13,11 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
-import org.move.fast.common.entity.ConfKeyEnum;
+import org.move.fast.common.api.push.PushPlus;
+import org.move.fast.common.entity.SysConfKeyEnum;
+import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
+import org.move.fast.common.utils.Log;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -59,18 +63,21 @@ public class VpnService {
     @Scheduled(cron = "0 10 1 * * ?")
     public void buy() {
 
+        DateTime now = DateTime.now();
+        Log.printAndWrite("开始执行VpnService.buy定时任务,时间为" + now);
+
         DateTime lastMonth = DateUtil.lastMonth();
 
         //分页查询(一次1000条)
-        int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1")).get(0).get("num")));
+        int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())).get(0).get("num")));
 
         int size = count / 1000 + 1;
 
         for (int i = 1; i <= size; i++) {
 
-            Page<VpnUser> vpnUserPage = new Page<>(i,1000);
+            Page<VpnUser> vpnUserPage = new Page<>(i, 1000);
 
-            Page<VpnUser> vpnUsers = vpnUserMapper.selectPage(vpnUserPage, new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, "1"));
+            Page<VpnUser> vpnUsers = vpnUserMapper.selectPage(vpnUserPage, new LambdaQueryWrapper<VpnUser>().lt(VpnUser::getLastBuyTime, lastMonth).eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey()));
 
             for (VpnUser vpnUser : vpnUsers.getRecords()) {
 
@@ -90,18 +97,20 @@ public class VpnService {
 
                 }
 
+                //多次未购买成功的直接当作账号注销处理
                 vpnUser.setUpdDate(LocalDateTime.now());
-                vpnUser.setStatus("0");
+                vpnUser.setStatus(DBFieldEnum.vpn_user_status_logout.getKey());
                 vpnUserMapper.updateById(vpnUser);
 
             }
         }
+        Log.printAndWrite("完成执行VpnService.buy定时任务,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
 
     }
 
     public String getRss(String clientType, String clientName, String remoteAdd) {
 
-        int downNum = checkRssNumAndGetDownNum(Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_down_num.name())).getConfVal()));
+        int downNum = checkRssNumAndGetDownNum(Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_down_num.name())).getConfVal()));
         if (downNum == 0) {
             throw new CustomerException(RetCodeEnum.too_much_req);
         }
@@ -110,10 +119,10 @@ public class VpnService {
         StringBuilder urls = new StringBuilder();
         LocalDate now = LocalDate.now();
 
-        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).getConfVal();
+        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
         //避免因为并发情况下导致的数据未初始化完成而被使用
-        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, "1")
+        List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())
                 .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "")
                 .ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
@@ -156,8 +165,10 @@ public class VpnService {
         pushMsg.put("下载个数", downNum);
         pushMsg.put("花费时间", LocalDateTimeUtil.between(nowTime, LocalDateTime.now()));
         pushMsg.put("请求时间", nowTime);
+        String pushMsgStr = pushMsg.toJSONString();
 
-        pushService.pushToPerson("GateOfBabylon订阅提醒", pushMsg);
+        pushService.pushToPerson(PushPlus.Template.json, "GateOfBabylon订阅提醒", pushMsgStr);
+        Log.printAndWrite(pushMsgStr);
 
         return Base64.encode(urls.toString());
     }
@@ -173,9 +184,9 @@ public class VpnService {
 
     private int checkRssNumAndGetDownNum(int downNum) {
 
-        int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().eq(VpnUser::getStatus, "1").ne(VpnUser::getLastUsedDate, LocalDate.now())).get(0).get("num")));
+        int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda().eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey()).ne(VpnUser::getLastUsedDate, LocalDate.now())).get(0).get("num")));
 
-        int repertory = Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_repertory.name())).getConfVal());
+        int repertory = Integer.parseInt(sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_repertory.name())).getConfVal());
 
         if (haveNum > repertory + downNum) {
             return downNum;

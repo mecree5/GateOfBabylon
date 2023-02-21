@@ -6,8 +6,9 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.move.fast.common.api.dabai.Vpn;
-import org.move.fast.common.entity.ConfKeyEnum;
-import org.move.fast.common.entity.VpnTypeEnum;
+import org.move.fast.common.entity.SysConfKeyEnum;
+import org.move.fast.common.api.dabai.VpnTypeEnum;
+import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.utils.HttpReq;
 import org.move.fast.common.utils.string.RandomString;
 import org.move.fast.module.entity.auto.SysConf;
@@ -92,7 +93,7 @@ public class RssService {
 
     private String getRssUrl(boolean isUse) {
 
-        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, ConfKeyEnum.vpn_rss_which.name())).getConfVal();
+        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
         String username = RandomString.getRandomString(4);
         String password = RandomString.getRandomString(10);
@@ -114,7 +115,7 @@ public class RssService {
             Vpn.checkIn(cookie, vpnUser);
         }
 
-        vpnUser.setStatus("1");
+        vpnUser.setStatus(DBFieldEnum.vpn_user_status_normal.getKey());
         vpnUser.setLastUpdRssWhich(which);
         //避免今天申请的账号用不了
         vpnUser.setLastUsedDate(isUse ? LocalDate.now() : LocalDate.now().plusDays(-1));

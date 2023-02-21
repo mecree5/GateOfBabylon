@@ -3,7 +3,6 @@ package org.move.fast.common.api.dabai;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONObject;
-import org.move.fast.common.entity.VpnTypeEnum;
 import org.move.fast.common.utils.Cmd;
 import org.move.fast.common.utils.IP;
 import org.move.fast.common.utils.string.HtmlToString;

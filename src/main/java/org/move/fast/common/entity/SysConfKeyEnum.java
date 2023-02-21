@@ -2,7 +2,7 @@ package org.move.fast.common.entity;
 
 import java.util.Arrays;
 
-public enum ConfKeyEnum {
+public enum SysConfKeyEnum {
 
     vpn_rss_which,
 
@@ -12,6 +12,6 @@ public enum ConfKeyEnum {
     ;
 
     public static boolean check(String str) {
-        return Arrays.stream(ConfKeyEnum.values()).anyMatch(s -> s.name().equalsIgnoreCase(str));
+        return Arrays.stream(SysConfKeyEnum.values()).anyMatch(s -> s.name().equalsIgnoreCase(str));
     }
 }

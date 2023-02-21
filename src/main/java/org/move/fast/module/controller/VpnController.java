@@ -2,10 +2,10 @@ package org.move.fast.module.controller;
 
 import cn.hutool.core.io.IoUtil;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.entity.ConfKeyEnum;
+import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
-import org.move.fast.common.entity.VpnTypeEnum;
+import org.move.fast.common.api.dabai.VpnTypeEnum;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -44,7 +44,7 @@ public class VpnController {
     @GetMapping("/upset/{key}/{value}")
     public Result<Object> upset(@PathVariable String key, @PathVariable String value) {
 
-        if ((!ConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) > 12) {
+        if ((!SysConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) > 12) {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
 
