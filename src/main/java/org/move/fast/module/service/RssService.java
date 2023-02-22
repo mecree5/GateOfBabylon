@@ -1,6 +1,5 @@
 package org.move.fast.module.service;
 
-
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
@@ -93,7 +92,8 @@ public class RssService {
 
     private String getRssUrl(boolean isUse) {
 
-        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>().eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
+        String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>()
+                .eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
         String username = RandomString.getRandomString(4);
         String password = RandomString.getRandomString(10);
@@ -124,8 +124,22 @@ public class RssService {
 
         VpnUser vpnUserId = vpnUserMapper.selectOne(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getEmail, vpnUser.getEmail()));
 
-        //拿订阅地址
-        Map<VpnTypeEnum, String> rssUrls = Vpn.takeRssUrl(cookie);
+        String rssUrlStr = getAllRssUrlAndInsertVmess(vpnUserId.getId(), Vpn.takeRssUrl(cookie), Integer.parseInt(which));
+
+        vpnUserId.setRssUrl(rssUrlStr);
+        vpnUserId.setUpdDate(LocalDateTime.now());
+        vpnUserMapper.updateById(vpnUserId);
+        return rssUrlStr;
+    }
+
+    /**
+     *
+     * @Param rssUrls
+     * @Param userId
+     * @Param which
+     * @Return
+     */
+    public String getAllRssUrlAndInsertVmess(int userId, Map<VpnTypeEnum, String> rssUrls, int which) {
 
         if (CollectionUtils.isEmpty(rssUrls)) {
             return null;
@@ -141,19 +155,16 @@ public class RssService {
 
             //获取各类型有用节点
             VpnVmess vpnVmess = new VpnVmess();
-            String vmess = getVmessByRssUrl(Integer.parseInt(which), vpnTypeEnum.getType(), rssUrl);
+            String vmess = getVmessByRssUrl(which, vpnTypeEnum.getType(), rssUrl);
 
             vpnVmess.setClientType(vpnTypeEnum.getType());
             vpnVmess.setVmessUrl(vmess);
-            vpnVmess.setUserId(vpnUserId.getId());
+            vpnVmess.setUserId(userId);
             vpnVmess.setCrtDate(LocalDateTimeUtil.now());
             vpnVmess.setUpdDate(LocalDateTimeUtil.now());
             vpnVmessMapper.insert(vpnVmess);
         }
 
-        vpnUserId.setRssUrl(rssUrlStr.toString());
-        vpnUserId.setUpdDate(LocalDateTime.now());
-        vpnUserMapper.updateById(vpnUserId);
         return rssUrlStr.toString();
     }
 

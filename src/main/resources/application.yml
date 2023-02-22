@@ -30,6 +30,7 @@ spring:
 
 gateOfBabylon:
   proxy:
+    is-start: true
     host: 127.0.0.1
     port: 10808
   api:
@@ -54,6 +55,7 @@ spring:
 
 gateOfBabylon:
   proxy:
+    is-start: false
     host: 127.0.0.1
     port: 10808
   api:
