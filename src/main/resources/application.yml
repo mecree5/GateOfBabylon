@@ -40,6 +40,9 @@ gateOfBabylon:
       ocr:
         key:
         secret:
+      ocr-trans:
+        key:
+        secret:
       translate:
         key:
         secret:
@@ -63,6 +66,9 @@ gateOfBabylon:
       push-plus-token:
     youdao:
       ocr:
+        key:
+        secret:
+      ocr-trans:
         key:
         secret:
       translate:

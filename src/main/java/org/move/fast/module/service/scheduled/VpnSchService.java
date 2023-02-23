@@ -44,7 +44,7 @@ public class VpnSchService {
     /**
      * 补偿机制去重新获取RssUrl
      */
-    @Scheduled(cron = "0 100 0 * * ?")
+    @Scheduled(cron = "0 10 0 * * ?")
     public void makeUpForRssUrl() {
 
         DateTime now = DateTime.now();

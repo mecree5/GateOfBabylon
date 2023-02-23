@@ -29,8 +29,9 @@ public class Log {
             LAST_WRITE_TIME = nowDate;
         }
         FileWriter writer = new FileWriter(path);
+        targetStr = "[" + now + "]" + targetStr;
         System.err.println(targetStr);
-        writer.append("[" + now + "]" + targetStr + "\r\n");
+        writer.append(targetStr + "\r\n");
     }
 
     public static void printAndWrite(Exception exception) {
