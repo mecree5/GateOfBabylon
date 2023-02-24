@@ -4,9 +4,11 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.api.dabai.VpnTypeEnum;
 import org.move.fast.common.entity.DBFieldEnum;
+import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.utils.HttpReq;
 import org.move.fast.common.utils.string.RandomString;
@@ -54,11 +56,19 @@ public class RssService {
                 continue;
             }
 
-            if (Vpn.checkIn(cookie, vpnUser)) {
-                vpnUser.setUpdDate(LocalDateTime.now());
-                vpnUserMapper.updateById(vpnUser);
-            }
+            Vpn.checkIn(cookie, vpnUser);
         }
+    }
+
+    public String checkInAndGetTraffic(VpnUser vpnUser) {
+
+        String cookie = Vpn.login(vpnUser);
+
+        if (StrUtil.isBlank(cookie)) {
+            return null;
+        }
+
+        return Vpn.checkIn(cookie, vpnUser);
     }
 
     /**
@@ -102,16 +112,20 @@ public class RssService {
         VpnUser vpnUser = Vpn.register(email, username, password, null);
 
         if (vpnUser == null) {
-            return null;
+            throw new CustomerException(RetCodeEnum.api_error);
         }
 
         String cookie = Vpn.login(vpnUser);
 
         if (StrUtil.isBlank(cookie)) {
-            return null;
+            throw new CustomerException(RetCodeEnum.api_error);
         }
 
         if (Vpn.buy(cookie, vpnUser)) {
+            throw new CustomerException(RetCodeEnum.api_error);
+        }
+
+        if (isUse) {
             Vpn.checkIn(cookie, vpnUser);
         }
 
@@ -133,7 +147,6 @@ public class RssService {
     }
 
     /**
-     *
      * @Param rssUrls
      * @Param userId
      * @Param which

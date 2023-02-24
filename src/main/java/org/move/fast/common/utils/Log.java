@@ -1,10 +1,11 @@
 package org.move.fast.common.utils;
 
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.file.FileWriter;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,10 +16,10 @@ public class Log {
     private static String LAST_WRITE_TIME;
 
     private static final List<String> exceptionMsgMaskList = Collections.singletonList(
-            "Connection reset by peer" //客户端中断请求,tomcat报错,不影响业务
+            "Connection reset by peer".trim() //客户端中断请求,tomcat报错,不影响业务
     );
 
-    private enum Grade{
+    private enum Grade {
         INFO,
         ERROR,
     }
@@ -31,12 +32,16 @@ public class Log {
         }
     }
 
+    public static void print(String targetStr) {
+        System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")) + "]" + "[" + Grade.INFO.name() + "]" + targetStr);
+    }
+
     public static void printAndWrite(String targetStr) {
         printAndWrite(Grade.INFO, targetStr);
     }
 
-    public static void printAndWrite(Grade grade,String targetStr) {
-        String now = DateUtil.now();
+    public static void printAndWrite(Grade grade, String targetStr) {
+        String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String nowDate = now.replaceAll("-", "").substring(0, 8);
         String path = LOG_PATH + nowDate + ".txt";
         if (!nowDate.equals(LAST_WRITE_TIME)) {
@@ -51,7 +56,7 @@ public class Log {
 
     public static void printAndWrite(Exception exception) {
 
-        if (exceptionMsgMaskList.contains(exception.getMessage())) {
+        if (exceptionMsgMaskList.contains(exception.getMessage().trim())) {
             return;
         }
 

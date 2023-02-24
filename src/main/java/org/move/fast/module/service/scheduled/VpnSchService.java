@@ -73,7 +73,7 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.makeUpFor定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
+        Log.printAndWrite("完成执行VpnService.makeUpFor定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.");
     }
 
     @Scheduled(cron = "0 30 0 * * ?")
@@ -107,7 +107,7 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.expire定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
+        Log.printAndWrite("完成执行VpnService.expire定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.");
     }
 
     @Scheduled(cron = "0 30 2 * * ?")
@@ -154,7 +154,7 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.buy定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS));
+        Log.printAndWrite("完成执行VpnService.buy定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.");
     }
 
 }

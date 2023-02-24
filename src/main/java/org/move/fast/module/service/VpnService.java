@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.Exception.CustomerException;
+import org.move.fast.common.api.dabai.Vpn;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
@@ -76,15 +77,16 @@ public class VpnService {
                 .eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())
                 .ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
-        //签到为懒加载 异步方式
-        rssService.checkInAsync(vpnUsers);
-
         for (VpnUser vpnUser : vpnUsers) {
+
+            //签到改为同步签到，获取剩余流量
+            String traffic = rssService.checkInAndGetTraffic(vpnUser);
 
             if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
 
-                urls.append(vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>()
-                        .eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId())).get(0).getVmessUrl()).append("\r\n");
+                urls.append(Vpn.upVmessName(clientType, vpnVmessMapper.selectList(new LambdaQueryWrapper<VpnVmess>()
+                        .eq(VpnVmess::getClientType, clientType)
+                        .eq(VpnVmess::getUserId, vpnUser.getId())).get(0).getVmessUrl(), "剩余流量:" + traffic)).append("\r\n");
 
                 vpnUser.setLastUsedDate(now);
                 vpnUser.setUpdDate(nowTime);
@@ -97,7 +99,6 @@ public class VpnService {
             String rssUrls = vpnUser.getRssUrl();
             String strCache = rssUrls.substring(rssUrls.indexOf(clientName + ":"));
             String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, strCache.substring(clientName.length() + 1, strCache.indexOf(";")));
-            urls.append(vmess).append("\r\n");
 
             vpnUser.setLastUsedDate(now);
             vpnUser.setUpdDate(nowTime);
@@ -109,6 +110,7 @@ public class VpnService {
             vpnVmessMapper.update(vpnVmess, new UpdateWrapper<VpnVmess>().lambda()
                     .eq(VpnVmess::getUserId, vpnUser.getId()).eq(VpnVmess::getClientType, clientType));
 
+            urls.append(Vpn.upVmessName(clientType, vmess, "剩余流量:" + traffic)).append("\r\n");
         }
 
         JSONObject pushMsg = new JSONObject(true);

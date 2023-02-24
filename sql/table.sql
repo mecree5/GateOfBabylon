@@ -33,7 +33,6 @@ CREATE TABLE `vpn_user`  (
   `status` char(1) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '状态（0-已注销，1-正常， 2-过期需购买）',
   `last_upd_rss_which` varchar(8) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL COMMENT '上次更新时获取的第几个节点',
   `last_used_date` date NULL DEFAULT NULL COMMENT '上次使用时间',
-  `last_check_date` date NULL DEFAULT NULL COMMENT '上次签到时间',
   `last_buy_time` date NULL DEFAULT NULL COMMENT '上次购买时间',
   `crt_date` datetime(0) NULL DEFAULT NULL,
   `upd_date` datetime(0) NULL DEFAULT NULL,

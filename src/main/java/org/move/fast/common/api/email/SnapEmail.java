@@ -2,7 +2,6 @@ package org.move.fast.common.api.email;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
 
 import java.net.HttpCookie;
 import java.util.HashMap;
@@ -33,12 +32,12 @@ public class SnapEmail {
         String path = "mail.php?unseen=1";
         String body = "";
         for (int i = 0; i < listenNum; i++) {
-//            body = HttpRequest.get(url + path).headerMap(cookie, true).execute().body();
-            HttpResponse execute = HttpRequest.get(url + path).headerMap(cookie, true).execute();
-            body = execute.body();
+            body = HttpRequest.get(url + path).headerMap(cookie, true).execute().body();
+
             if (StrUtil.isNotBlank(body)) {
                 return body;
             }
+
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

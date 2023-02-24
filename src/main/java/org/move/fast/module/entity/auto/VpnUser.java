@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-15
+ * @since 2023-02-24
  */
 @TableName("vpn_user")
 public class VpnUser implements Serializable {
@@ -46,11 +46,6 @@ public class VpnUser implements Serializable {
      * 上次使用时间
      */
     private LocalDate lastUsedDate;
-
-    /**
-     * 上次签到时间
-     */
-    private LocalDate lastCheckDate;
 
     /**
      * 上次购买时间
@@ -110,13 +105,6 @@ public class VpnUser implements Serializable {
     public void setLastUsedDate(LocalDate lastUsedDate) {
         this.lastUsedDate = lastUsedDate;
     }
-    public LocalDate getLastCheckDate() {
-        return lastCheckDate;
-    }
-
-    public void setLastCheckDate(LocalDate lastCheckDate) {
-        this.lastCheckDate = lastCheckDate;
-    }
     public LocalDate getLastBuyTime() {
         return lastBuyTime;
     }
@@ -149,7 +137,6 @@ public class VpnUser implements Serializable {
             ", status=" + status +
             ", lastUpdRssWhich=" + lastUpdRssWhich +
             ", lastUsedDate=" + lastUsedDate +
-            ", lastCheckDate=" + lastCheckDate +
             ", lastBuyTime=" + lastBuyTime +
             ", crtDate=" + crtDate +
             ", updDate=" + updDate +

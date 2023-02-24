@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author YinShiJie
- * @since 2023-02-15
+ * @since 2023-02-24
  */
 public interface VpnUserMapper extends BaseMapper<VpnUser> {
 
