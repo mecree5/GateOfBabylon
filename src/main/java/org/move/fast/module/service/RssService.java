@@ -121,7 +121,7 @@ public class RssService {
             throw new CustomerException(RetCodeEnum.api_error);
         }
 
-        if (Vpn.buy(cookie, vpnUser)) {
+        if (!Vpn.buy(cookie, vpnUser)) {
             throw new CustomerException(RetCodeEnum.api_error);
         }
 

@@ -16,11 +16,12 @@ public class Log {
     private static String LAST_WRITE_TIME;
 
     private static final List<String> exceptionMsgMaskList = Collections.singletonList(
-            "Connection reset by peer".trim() //客户端中断请求,tomcat报错,不影响业务
+            "Connection reset by peer".trim().toLowerCase() //客户端中断请求,tomcat报错,不影响业务
     );
 
-    private enum Grade {
+    public enum Grade {
         INFO,
+        DEBUG,
         ERROR,
     }
 
@@ -32,15 +33,21 @@ public class Log {
         }
     }
 
-    public static void print(String targetStr) {
-        System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")) + "]" + "[" + Grade.INFO.name() + "]" + targetStr);
+    public static void info(String targetStr, Class clazz) {
+        System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")) + "]"
+                + "[" + Grade.INFO.name() + "]" + clazz.getName() + "::" + targetStr);
     }
 
-    public static void printAndWrite(String targetStr) {
-        printAndWrite(Grade.INFO, targetStr);
+    public static void debug(String targetStr, Class clazz) {
+        System.out.println("[" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")) + "]"
+                + "[" + Grade.DEBUG.name() + "]" + clazz.getName() + "::" + targetStr);
     }
 
-    public static void printAndWrite(Grade grade, String targetStr) {
+    public static void printAndWrite(String targetStr, Class clazz) {
+        printAndWrite(Grade.INFO, targetStr, clazz);
+    }
+
+    public static void printAndWrite(Grade grade, String targetStr, Class clazz) {
         String now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS"));
         String nowDate = now.replaceAll("-", "").substring(0, 8);
         String path = LOG_PATH + nowDate + ".txt";
@@ -49,19 +56,23 @@ public class Log {
             LAST_WRITE_TIME = nowDate;
         }
         FileWriter writer = new FileWriter(path);
-        targetStr = "[" + now + "]" + "[" + grade.name() + "]" + targetStr;
+        targetStr = "[" + now + "]" + "[" + grade.name() + "]" + clazz.getName() + "::" + targetStr;
         System.out.println(targetStr);
         writer.append(targetStr + "\r\n");
     }
 
-    public static void printAndWrite(Exception exception) {
+    public static void printAndWrite(Throwable exception) {
+        printAndWrite("", exception);
+    }
 
-        if (exceptionMsgMaskList.contains(exception.getMessage().trim())) {
+    public static void printAndWrite(String str, Throwable exception) {
+
+        if (exceptionMsgMaskList.contains(exception.getMessage().trim().toLowerCase())) {
             return;
         }
 
-        StringBuilder log = new StringBuilder(exception.getClass().toString());
-        log.append(":").append(exception.getMessage());
+        StringBuilder log = new StringBuilder(str);
+        log.append(exception.getClass()).append(":").append(exception.getMessage());
         log.append("\r\n");
         StackTraceElement[] trace = exception.getStackTrace();
 
@@ -69,7 +80,7 @@ public class Log {
             log.append("    at  ").append(traceElement).append("\r\n");
         }
 
-        Log.printAndWrite(Grade.ERROR, log.toString());
+        Log.printAndWrite(Grade.ERROR, log.toString(), Log.class);
     }
 
 }

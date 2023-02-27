@@ -22,7 +22,7 @@ public class PushService {
     public void pushToPerson(PushPlus.Template template, String title, String content) {
 
         if (PushPlus.pushToPerson(token, template, title, content)) {
-            Log.printAndWrite("PushService.pushToPerson推送:" + title + "内容为" + content);
+            Log.printAndWrite("PushService.pushToPerson推送:" + title + "内容为" + content, this.getClass());
         }
     }
 
@@ -33,7 +33,7 @@ public class PushService {
         String contentStr = content.toJSONString();
 
         if (PushPlus.pushToPerson(token, PushPlus.Template.json, title, contentStr)) {
-            Log.printAndWrite("PushService.getIpInfoAndPushToPerson推送:" + title + "内容为" + contentStr);
+            Log.printAndWrite("PushService.getIpInfoAndPushToPerson推送:" + title + "内容为" + contentStr, this.getClass());
         }
     }
 
