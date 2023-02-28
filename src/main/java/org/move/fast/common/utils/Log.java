@@ -73,6 +73,12 @@ public class Log {
 
     public static <T> void printAndWrite(Grade grade, String targetStr, Class<T> clazz) {
 
+        if (Grade.ERROR.name().equals(grade.name())) {
+            System.err.println(targetStr);
+        } else {
+            System.out.println(targetStr);
+        }
+
         if (!isWrite(grade)){
             return;
         }
@@ -88,12 +94,6 @@ public class Log {
 
         FileWriter writer = new FileWriter(LOG_PATH);
         targetStr = getHeaderStr(grade, now, clazz.getName()) + targetStr;
-
-        if (Grade.ERROR.name().equals(grade.name())) {
-            System.err.println(targetStr);
-        } else {
-            System.out.println(targetStr);
-        }
 
         writer.append(targetStr + "\r\n");
     }
