@@ -7,9 +7,16 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
+import java.util.List;
+
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    private static final List<String> exceptionMaskList = Collections.singletonList(
+            "org.apache.catalina.connector.ClientAbortException" //客户端中断请求,tomcat报错,不影响业务
+    );
 
     /*
     处理自定义异常
@@ -27,7 +34,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public Result<Object> exceptionHandler(Exception exception) {
 
-        Log.printAndWrite(exception);
+        if (!exceptionMaskList.contains(exception.getClass().getName())) {
+            Log.printAndWrite(exception);
+        }
         return Result.exception(exception);
     }
 
