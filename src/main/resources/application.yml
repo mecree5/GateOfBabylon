@@ -17,6 +17,7 @@ mybatis-plus:
   global-config:
     db-column-underline: true
     id-type: 0
+    banner: false
 
 #配置分区
 ---

@@ -28,7 +28,6 @@ public class IpShuDi {
         Map<String, String> ipHomePlace = new LinkedHashMap<>();
 
         if (StrUtil.isBlank(body) || !(body.contains("<table>"))) {
-            ipHomePlace.put("归属地", "unknown");
             return ipHomePlace;
         }
 

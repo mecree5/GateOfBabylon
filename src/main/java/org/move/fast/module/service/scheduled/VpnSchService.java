@@ -48,7 +48,7 @@ public class VpnSchService {
     public void makeUpForRssUrl() {
 
         DateTime now = DateTime.now();
-        Log.printAndWrite("开始执行VpnService.makeUpFor定时任务,时间为" + now, this.getClass());
+        Log.printAndWrite("开始执行VpnService.makeUpForRssUrl定时任务,时间为" + now, this.getClass());
 
         String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>()
                 .eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
@@ -73,7 +73,7 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.makeUpFor定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
+        Log.printAndWrite("完成执行VpnService.makeUpForRssUrl定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
     @Scheduled(cron = "0 30 0 * * ?")
