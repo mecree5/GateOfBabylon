@@ -11,6 +11,7 @@ import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.utils.HttpReq;
+import org.move.fast.common.utils.Log;
 import org.move.fast.common.utils.string.RandomString;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
@@ -25,9 +26,7 @@ import org.springframework.util.CollectionUtils;
 import javax.annotation.Resource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author YinShiJie
@@ -47,17 +46,9 @@ public class RssService {
     SysConfMapper sysConfMapper;
 
     @Async("asyncTaskExecutor")
-    public void checkInAsync(List<VpnUser> vpnUsers) {
-
-        for (VpnUser vpnUser : vpnUsers) {
-
-            String cookie = Vpn.login(vpnUser);
-            if (StrUtil.isBlank(cookie)) {
-                continue;
-            }
-
-            Vpn.checkIn(cookie, vpnUser);
-        }
+    public void checkInAsyncAndPutTrafficToResult(VpnUser vpnUser, String resultKey, Integer itemKey, Map<String, LinkedHashMap<Integer, String>> result) {
+        Log.info(Thread.currentThread().getName() + "正在签到" + vpnUser.getEmail(), this.getClass());
+        result.get(resultKey).put(itemKey, checkInAndGetTraffic(vpnUser));
     }
 
     public String checkInAndGetTraffic(VpnUser vpnUser) {

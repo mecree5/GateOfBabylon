@@ -2,10 +2,11 @@ package org.move.fast.common.entity;
 
 public enum RetCodeEnum {
 
-    validated_error("511", "参数检验错误"),
-    file_not_exists("512", "文件不存在"),
-    api_error("513", "api调用出错"),
-    too_much_req("514", "请求的太频繁了..."),
+    validated_error("5011", "参数检验错误"),
+    file_not_exists("5012", "文件不存在"),
+    api_error("5013", "api调用出错"),
+    too_much_req("5014", "请求的太频繁了..."),
+    async_wait_error("5015", "异步响应等待时间过长"),
     ;
 
     private final String code;

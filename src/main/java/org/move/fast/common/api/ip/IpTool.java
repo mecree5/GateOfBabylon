@@ -3,7 +3,6 @@ package org.move.fast.common.api.ip;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import org.move.fast.common.utils.IP;
-import org.move.fast.common.utils.Log;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -15,8 +14,6 @@ public class IpTool {
     public static Map<String, String> getIpHomePlace(String ip) {
 
         String body = HttpRequest.get(url + ip).header("x-forwarded-for", IP.getRandomIp()).execute().body();
-
-        Log.info(body, IpTool.class);
 
         Map<String, String> ipHomePlace = new LinkedHashMap<>();
 
