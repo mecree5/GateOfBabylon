@@ -1,4 +1,4 @@
-package org.move.fast.common.api.dabai;
+package org.move.fast.common.api.vpn;
 
 import cn.hutool.core.codec.Base64;
 import cn.hutool.core.util.StrUtil;
@@ -24,7 +24,7 @@ import java.util.Map;
  * @author: YinShiJie
  * @create: 2022-03-15 10:05
  */
-public class Vpn {
+public class DaBai {
 
     private static final String suc_ret_code = "1";
 
@@ -55,7 +55,7 @@ public class Vpn {
         if (!checkRsp(rsp)) {
             return false;
         }
-        Log.info(Cmd.colorString("邮件发送:" + "响应信息为   " + Unicode.unicodeDecode(rsp), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("邮件发送:" + "响应信息为   " + Unicode.unicodeDecode(rsp), 32, 1), DaBai.class);
         return checkRsp(rsp);
     }
 
@@ -72,7 +72,7 @@ public class Vpn {
         String rsp = HttpRequest.post(vpn_url + vpn_register_path).header("x-forwarded-for", IP.getRandomIp()).body(JSONObject.toJSONString(body)).execute().body();
         if (checkRsp(rsp)) {
 
-            Log.info(Cmd.colorString("账号" + email + "注册成功,响应信息为   " + Unicode.unicodeDecode(rsp), 32, 1), Vpn.class);
+            Log.info(Cmd.colorString("账号" + email + "注册成功,响应信息为   " + Unicode.unicodeDecode(rsp), 32, 1), DaBai.class);
 
             LocalDateTime time = LocalDateTime.now();
             VpnUser vpnUser = new VpnUser();
@@ -107,7 +107,7 @@ public class Vpn {
         String email = cookie.substring(cookie.indexOf("email="), cookie.indexOf(";", cookie.indexOf("email=") + 1) + 1);
         String uid = cookie.substring(cookie.indexOf("uid="), cookie.indexOf(";", cookie.indexOf("uid=") + 1) + 1);
 
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "登录成功," + "cookie信息为   " + uid + expire_in + key + email, 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "登录成功," + "cookie信息为   " + uid + expire_in + key + email, 32, 1), DaBai.class);
 
         return uid + expire_in + key + email;
     }
@@ -127,7 +127,7 @@ public class Vpn {
             return false;
         }
 
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "购买成功,响应信息为  " + Unicode.unicodeDecode(rsp), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "购买成功,响应信息为  " + Unicode.unicodeDecode(rsp), 32, 1), DaBai.class);
         vpnUser.setLastBuyTime(LocalDate.now());
         return true;
     }
@@ -138,7 +138,7 @@ public class Vpn {
         if (StrUtil.isBlank(rsp)) {
             return null;
         }
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "签到成功,响应信息为  " + Unicode.unicodeDecode(rsp), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "签到成功,响应信息为  " + Unicode.unicodeDecode(rsp), 32, 1), DaBai.class);
 
         JSONObject rspJsonObj = JSONObject.parseObject(rsp);
         if (!suc_ret_code.equals(rspJsonObj.getString("ret"))) {
@@ -159,11 +159,11 @@ public class Vpn {
         }
 
         String v2ray = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
-        Log.info(Cmd.colorString("v2ray获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(v2ray), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("v2ray获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(v2ray), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_v2ray, v2ray);
 
         String kitsunebi = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
-        Log.info(Cmd.colorString("kitsunebi获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(kitsunebi), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("kitsunebi获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(kitsunebi), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_kitsunebi, kitsunebi);
 
 //        //暂不支持clash 更新订阅为 yaml配置
@@ -172,16 +172,16 @@ public class Vpn {
 //        hashMap.put(VpnEnum.client_clash, clash);
 
         String shadowrocket = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
-        Log.info(Cmd.colorString("shadowrocket获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(shadowrocket), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("shadowrocket获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(shadowrocket), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_shadowrocket, shadowrocket);
 
         String Quantumult = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
-        Log.info(Cmd.colorString("Quantumult获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(Quantumult), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("Quantumult获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(Quantumult), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_Quantumult, Quantumult);
 
         //不用解密 直接为vmess串
         String QuantumultX = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
-        Log.info(Cmd.colorString("QuantumultX获取订阅成功   " + "订阅信息为" + Unicode.unicodeDecode(QuantumultX), 32, 1), Vpn.class);
+        Log.info(Cmd.colorString("QuantumultX获取订阅成功   " + "订阅信息为" + Unicode.unicodeDecode(QuantumultX), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_QuantumultX, QuantumultX);
 
         return hashMap;

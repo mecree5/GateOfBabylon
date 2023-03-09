@@ -1,4 +1,4 @@
-package org.move.fast.common.api.dabai;
+package org.move.fast.common.api.vpn;
 
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.entity.RetCodeEnum;

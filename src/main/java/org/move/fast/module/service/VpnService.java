@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.api.dabai.Vpn;
+import org.move.fast.common.api.vpn.DaBai;
 import org.move.fast.common.api.ip.IpTool;
 import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.entity.DBFieldEnum;
@@ -140,7 +140,7 @@ public class VpnService {
         StringBuilder urls = new StringBuilder();
         //取出异步签到信息
         for (int i = 0; i < vpnVmesses.size(); i++) {
-            urls.append(Vpn.upVmessName(clientType, vpnVmesses.get(i).getVmessUrl(), "剩余流量:" + result.get(resultKey).get(i))).append("\r\n");
+            urls.append(DaBai.upVmessName(clientType, vpnVmesses.get(i).getVmessUrl(), "剩余流量:" + result.get(resultKey).get(i))).append("\r\n");
         }
         //避免内存溢出
         result.remove(resultKey);

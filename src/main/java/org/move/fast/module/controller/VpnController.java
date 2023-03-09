@@ -2,7 +2,7 @@ package org.move.fast.module.controller;
 
 import cn.hutool.core.io.IoUtil;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.api.dabai.VpnTypeEnum;
+import org.move.fast.common.api.vpn.VpnTypeEnum;
 import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
@@ -34,11 +34,11 @@ public class VpnController {
     }
 
     @GetMapping("/stockUp/{num}")
-    public Result<Object> stockUp(@PathVariable int num) {
-        if (num > 10) {
+    public String stockUp(@PathVariable int num) {
+        if (num > 20) {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
-        return Result.success().setData(rssService.getRssUrl(num));
+        return rssService.getRssUrl(num);
     }
 
     @GetMapping("/upset/{key}/{value}")

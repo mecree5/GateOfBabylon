@@ -5,8 +5,8 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.api.dabai.Vpn;
-import org.move.fast.common.api.dabai.VpnTypeEnum;
+import org.move.fast.common.api.vpn.DaBai;
+import org.move.fast.common.api.vpn.VpnTypeEnum;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
@@ -53,13 +53,13 @@ public class RssService {
 
     public String checkInAndGetTraffic(VpnUser vpnUser) {
 
-        String cookie = Vpn.login(vpnUser);
+        String cookie = DaBai.login(vpnUser);
 
         if (StrUtil.isBlank(cookie)) {
             return null;
         }
 
-        return Vpn.checkIn(cookie, vpnUser);
+        return DaBai.checkIn(cookie, vpnUser);
     }
 
     /**
@@ -100,24 +100,24 @@ public class RssService {
         String password = RandomString.getRandomString(10);
         String email = username + new Random().nextInt(1000) + "@qq.com";
 
-        VpnUser vpnUser = Vpn.register(email, username, password, null);
+        VpnUser vpnUser = DaBai.register(email, username, password, null);
 
         if (vpnUser == null) {
             throw new CustomerException(RetCodeEnum.api_error);
         }
 
-        String cookie = Vpn.login(vpnUser);
+        String cookie = DaBai.login(vpnUser);
 
         if (StrUtil.isBlank(cookie)) {
             throw new CustomerException(RetCodeEnum.api_error);
         }
 
-        if (!Vpn.buy(cookie, vpnUser)) {
+        if (!DaBai.buy(cookie, vpnUser)) {
             throw new CustomerException(RetCodeEnum.api_error);
         }
 
         if (isUse) {
-            Vpn.checkIn(cookie, vpnUser);
+            DaBai.checkIn(cookie, vpnUser);
         }
 
         vpnUser.setStatus(DBFieldEnum.vpn_user_status_normal.getKey());
@@ -129,7 +129,7 @@ public class RssService {
 
         VpnUser vpnUserId = vpnUserMapper.selectOne(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getEmail, vpnUser.getEmail()));
 
-        String rssUrlStr = getAllRssUrlAndInsertVmess(vpnUserId.getId(), Vpn.takeRssUrl(cookie), Integer.parseInt(which));
+        String rssUrlStr = getAllRssUrlAndInsertVmess(vpnUserId.getId(), DaBai.takeRssUrl(cookie), Integer.parseInt(which));
 
         vpnUserId.setRssUrl(rssUrlStr);
         vpnUserId.setUpdDate(LocalDateTime.now());

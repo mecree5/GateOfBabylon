@@ -8,7 +8,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.move.fast.common.api.dabai.Vpn;
+import org.move.fast.common.api.vpn.DaBai;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.utils.Log;
@@ -60,13 +60,13 @@ public class VpnSchService {
 
             for (VpnUser vpnUser : vpnUsers) {
 
-                String cookie = Vpn.login(vpnUser);
+                String cookie = DaBai.login(vpnUser);
 
                 if (StrUtil.isBlank(cookie)) {
                     continue;
                 }
 
-                vpnUser.setRssUrl(rssService.getAllRssUrlAndInsertVmess(vpnUser.getId(), Vpn.takeRssUrl(cookie), Integer.parseInt(which)));
+                vpnUser.setRssUrl(rssService.getAllRssUrlAndInsertVmess(vpnUser.getId(), DaBai.takeRssUrl(cookie), Integer.parseInt(which)));
                 vpnUser.setUpdDate(LocalDateTime.now());
                 vpnUserMapper.updateById(vpnUser);
 
@@ -134,11 +134,11 @@ public class VpnSchService {
                 for (VpnUser vpnUser : vpnUsers.getRecords()) {
 
                     if (LocalDateTimeUtil.betweenPeriod(vpnUser.getLastBuyTime(), LocalDate.from(LocalDateTimeUtil.of(lastMonth))).getDays() <= 3) {
-                        String cookie = Vpn.login(vpnUser);
+                        String cookie = DaBai.login(vpnUser);
                         if (StrUtil.isBlank(cookie)) {
                             continue;
                         }
-                        if (Vpn.buy(cookie, vpnUser)) {
+                        if (DaBai.buy(cookie, vpnUser)) {
                             //账号恢复正常
                             vpnUser.setStatus(DBFieldEnum.vpn_user_status_normal.getKey());
                             vpnUser.setUpdDate(LocalDateTime.now());
