@@ -6,3 +6,6 @@ GET http://localhost:8080/vpn/upset/{key}/{value}
 
 ### 获取rss订阅
 GET http://localhost:8080/vpn/down/{clientType}
+
+### 获取rss订阅
+GET http://localhost:8080/vpn/cd/{clientType}/{id}

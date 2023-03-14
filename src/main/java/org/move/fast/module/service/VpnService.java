@@ -4,23 +4,27 @@ import cn.hutool.core.codec.Base64;
 import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.Exception.CustomerException;
-import org.move.fast.common.api.vpn.DaBai;
 import org.move.fast.common.api.ip.IpTool;
 import org.move.fast.common.api.push.PushPlus;
+import org.move.fast.common.api.vpn.DaBai;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
+import org.move.fast.common.entity.VpnCrawlerTypeEnum;
 import org.move.fast.common.utils.Log;
 import org.move.fast.config.ReadConf;
 import org.move.fast.module.entity.auto.SysConf;
+import org.move.fast.module.entity.auto.VpnCrawler;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
 import org.move.fast.module.mapper.auto.SysConfMapper;
+import org.move.fast.module.mapper.auto.VpnCrawlerMapper;
 import org.move.fast.module.mapper.auto.VpnUserMapper;
 import org.move.fast.module.mapper.auto.VpnVmessMapper;
 import org.springframework.stereotype.Service;
@@ -53,6 +57,9 @@ public class VpnService {
 
     @Resource
     SysConfMapper sysConfMapper;
+
+    @Resource
+    VpnCrawlerMapper vpnCrawlerMapper;
 
     static volatile Map<String, LinkedHashMap<Integer, String>> result = new ConcurrentHashMap<>();
 
@@ -190,6 +197,22 @@ public class VpnService {
 
         rssService.getRssUrlAsync(downNum + repertory - haveNum);
         return downNum;
+    }
+
+    public String crawler(String clientType, String id) {
+        VpnCrawler vpnCrawler = vpnCrawlerMapper.selectById(id);
+
+        if (!clientType.equals(vpnCrawler.getClientType())) {
+            throw new CustomerException(RetCodeEnum.validated_error);
+        }
+
+        if (VpnCrawlerTypeEnum.TYPE_1.getType().equals(vpnCrawler.getCrawlerType())) {
+            //todo 验证可用性
+            return HttpRequest.get(vpnCrawler.getCrawlerUrl()).execute().body();
+        } else {
+            //todo
+            return null;
+        }
     }
 
 }

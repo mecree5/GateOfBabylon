@@ -26,13 +26,6 @@ public class VpnController {
     @Resource
     RssService rssService;
 
-    @GetMapping("/test")
-    public Result<Object> test() {
-
-        System.out.println(123123123);
-        return Result.success();
-    }
-
     @GetMapping("/stockUp/{num}")
     public String stockUp(@PathVariable int num) {
         if (num > 20) {
@@ -62,9 +55,21 @@ public class VpnController {
         response.setContentType("text/plain");
         response.setContentLength(bytes.length);
 
-        String headerKey = "Content-Disposition";
-        String headerValue = String.format("attachment; filename=\"%s\"", "rss.txt");
-        response.setHeader(headerKey, headerValue);
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", "rss.txt"));
+
+        IoUtil.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        response.flushBuffer();
+    }
+
+    @RequestMapping(value = "/cd/{clientName}/{id}", method = RequestMethod.GET)
+    public void crawlerToDown(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName, @PathVariable String id) throws IOException {
+
+        byte[] bytes = vpnService.crawler(VpnTypeEnum.checkNameAndGetType(clientName), id).getBytes();
+
+        response.setContentType("text/plain");
+        response.setContentLength(bytes.length);
+
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", "rss.txt"));
 
         IoUtil.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
         response.flushBuffer();
