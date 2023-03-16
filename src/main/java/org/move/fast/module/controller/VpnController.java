@@ -3,9 +3,7 @@ package org.move.fast.module.controller;
 import cn.hutool.core.io.IoUtil;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.vpn.VpnTypeEnum;
-import org.move.fast.common.entity.Result;
 import org.move.fast.common.entity.RetCodeEnum;
-import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -33,17 +31,6 @@ public class VpnController {
         }
         return rssService.getRssUrl(num);
     }
-
-    @GetMapping("/upset/{key}/{value}")
-    public Result<Object> upset(@PathVariable String key, @PathVariable String value) {
-
-        if ((!SysConfKeyEnum.check(key)) || 0 > Integer.parseInt(value) || Integer.parseInt(value) > 12) {
-            throw new CustomerException(RetCodeEnum.validated_error);
-        }
-
-        return vpnService.upSet(key, value) ? Result.success() : Result.error();
-    }
-
 
     @RequestMapping(value = "/down/{clientName}", method = RequestMethod.GET)
     public void down(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName) throws IOException {

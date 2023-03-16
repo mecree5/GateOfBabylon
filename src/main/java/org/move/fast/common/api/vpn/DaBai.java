@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.utils.Cmd;
 import org.move.fast.common.utils.IP;
 import org.move.fast.common.utils.Log;
-import org.move.fast.common.utils.string.HtmlToString;
+import org.move.fast.common.utils.string.Html;
 import org.move.fast.common.utils.string.Unicode;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.springframework.util.CollectionUtils;
@@ -158,11 +158,11 @@ public class DaBai {
             return null;
         }
 
-        String v2ray = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
+        String v2ray = Html.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
         Log.info(Cmd.colorString("v2ray获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(v2ray), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_v2ray, v2ray);
 
-        String kitsunebi = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
+        String kitsunebi = Html.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
         Log.info(Cmd.colorString("kitsunebi获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(kitsunebi), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_kitsunebi, kitsunebi);
 
@@ -171,16 +171,16 @@ public class DaBai {
 //        Log.info(CmdColour.colorString("clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash), 32, 1));
 //        hashMap.put(VpnEnum.client_clash, clash);
 
-        String shadowrocket = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
+        String shadowrocket = Html.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
         Log.info(Cmd.colorString("shadowrocket获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(shadowrocket), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_shadowrocket, shadowrocket);
 
-        String Quantumult = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
+        String Quantumult = Html.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
         Log.info(Cmd.colorString("Quantumult获取订阅成功    " + "订阅信息为" + Unicode.unicodeDecode(Quantumult), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_Quantumult, Quantumult);
 
         //不用解密 直接为vmess串
-        String QuantumultX = HtmlToString.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
+        String QuantumultX = Html.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
         Log.info(Cmd.colorString("QuantumultX获取订阅成功   " + "订阅信息为" + Unicode.unicodeDecode(QuantumultX), 32, 1), DaBai.class);
         hashMap.put(VpnTypeEnum.client_QuantumultX, QuantumultX);
 

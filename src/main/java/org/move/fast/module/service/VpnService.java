@@ -16,7 +16,6 @@ import org.move.fast.common.api.vpn.DaBai;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
-import org.move.fast.common.entity.VpnCrawlerTypeEnum;
 import org.move.fast.common.utils.Log;
 import org.move.fast.config.ReadConf;
 import org.move.fast.module.entity.auto.SysConf;
@@ -168,15 +167,6 @@ public class VpnService {
         pushService.pushToPerson(PushPlus.Template.json, "GateOfBabylon订阅提醒", pushMsg.toJSONString());
     }
 
-    public boolean upSet(String key, String value) {
-
-        SysConf sysConf = new SysConf();
-        sysConf.setUpdDate(LocalDateTime.now());
-        sysConf.setConfVal(value);
-
-        return sysConfMapper.update(sysConf, new UpdateWrapper<SysConf>().lambda().eq(SysConf::getConfKey, key)) == 1;
-    }
-
     private int checkRssNumAndGetDownNum(int downNum) {
 
         int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda()
@@ -206,7 +196,7 @@ public class VpnService {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
 
-        if (VpnCrawlerTypeEnum.TYPE_1.getType().equals(vpnCrawler.getCrawlerType())) {
+        if (DBFieldEnum.vpn_crawler_type_direct.getKey().equals(vpnCrawler.getCrawlerType())) {
             //todo 验证可用性
             return HttpRequest.get(vpnCrawler.getCrawlerUrl()).execute().body();
         } else {
