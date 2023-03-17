@@ -55,7 +55,7 @@ public class Html {
             JSONObject jsonObject = (JSONObject) obj;
             String[] keys = jsonObject.keySet().toArray(new String[0]);
 
-            html.append("<table border=\"1\" width=\"100%\" align=\"center\" style=\"border-collapse: collapse; border-width: 6px; border-style: solid; border-radius: 10px; outline: 2px solid white;\">");
+            html.append("<table border=\"1\" width=\"100%\" align=\"center\" style=\"border-collapse: collapse; border-width: 3px; border-style: solid; border-radius: 10px; outline: 2px solid white;\">");
             Arrays.stream(keys).forEach(key -> {
                 html.append("<tr>");
                 html.append("<td width=\"10%\" align=\"center\">").append(key).append("</td>");
@@ -84,8 +84,9 @@ public class Html {
             JSONObject jsonObject = (JSONObject) obj;
             String[] keys = jsonObject.keySet().toArray(new String[0]);
 
-            html.append("<table border=\"1\" width=\"100%\" style=\"border-collapse: collapse; border-width: 6px; border-style: solid; border-radius: 10px; outline: 2px solid white;\">");
-            Arrays.stream(keys).forEach(key -> {
+            html.append("<table border=\"0\" rules=\"rows\" width=\"100%\">");
+            for (int i = 0; i < keys.length; i++) {
+                String key = keys[i];
                 html.append("<tr>");
                 html.append("<td width=\"30%\" align=\"center\">").append(key).append("</td>");
                 Object val = jsonObject.get(key);
@@ -94,8 +95,11 @@ public class Html {
                 } else {
                     html.append("<td width=\"70%\">").append(val).append("</td>");
                 }
-                html.append("</tr>");
-            });
+                //避免出现两个边框
+                if (i != keys.length - 1) {
+                    html.append("</tr>").append("<tr></tr>");
+                }
+            }
             html.append("</table>");
         } else if (obj instanceof JSONArray) {
             JSONArray array = (JSONArray) obj;
@@ -106,9 +110,9 @@ public class Html {
         return html.toString();
     }
 
-    public static String getHeadHtml(){
+    public static String getHeadHtml() {
         return "<pre style=\"text-align: center; color: #94a3b8; \">" +
-                 "                                                                                                                                                              bbbbbbbb                                                                            \n" +
+                "                                                                                                                                                              bbbbbbbb                                                                            \n" +
                 "        GGGGGGGGGGGGG                          tttt                                   OOOOOOOOO        ffffffffffffffff  BBBBBBBBBBBBBBBBB                    b::::::b                                 lllllll                                    \n" +
                 "     GGG::::::::::::G                       ttt:::t                                 OO:::::::::OO     f::::::::::::::::f B::::::::::::::::B                   b::::::b                                 l:::::l                                    \n" +
                 "   GG:::::::::::::::G                       t:::::t                               OO:::::::::::::OO  f::::::::::::::::::fB::::::BBBBBB:::::B                  b::::::b                                 l:::::l                                    \n" +
