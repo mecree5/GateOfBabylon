@@ -1,7 +1,6 @@
 package org.move.fast.module.service;
 
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
@@ -29,22 +28,26 @@ public class SysService {
         JSONObject getRssUrl = new JSONObject(true);
         getRssUrl.put("RssUrl", url + "vpn/stockUp/#{num}");
 
-        JSONObject sys = new JSONObject(true);
+        JSONObject funcList = new JSONObject(true);
+        funcList.put("添加订阅地址", getVmess);
+        funcList.put("获取订阅地址", getRssUrl);
+
+        JSONObject nowSysConfList = new JSONObject(true);
+        JSONObject upSysConfList = new JSONObject();
         for (SysConf sysConf : sysConfMapper.selectList(new QueryWrapper<>())) {
             String confKey = sysConf.getConfKey();
-            sys.put(confKey + "当前设置", sysConf.getConfVal());
-            sys.put("UPSET " + confKey, url + "sys/upset/" + confKey + "/#{num}");
+            nowSysConfList.put(sysConf.getConfRemark(), confKey + "-->" + sysConf.getConfVal());
+            upSysConfList.put(sysConf.getConfRemark(), url + "sys/upset/" + confKey + "/#{num}");
         }
-
-        JSONArray list = new JSONArray();
-        list.add(getVmess);
-        list.add(getRssUrl);
-        list.add(sys);
+        JSONObject sysConfList = new JSONObject(true);
+        sysConfList.put("当前设置", nowSysConfList);
+        sysConfList.put("修改设置", upSysConfList);
 
         JSONObject result = new JSONObject(true);
-        result.put("功能列表", list);
+        result.put("功能列表", funcList);
+        result.put("系统设置", sysConfList);
 
-        return Html.objToHtml(result);
+        return Html.getHeadHtml() + Html.objToHtml(result);
     }
 
     public boolean upSet(String key, String value) {
