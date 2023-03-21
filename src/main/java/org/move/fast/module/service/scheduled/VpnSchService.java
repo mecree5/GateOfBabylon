@@ -81,7 +81,7 @@ public class VpnSchService {
 
         DateTime now = DateTime.now();
         Log.printAndWrite("开始执行VpnService.expire定时任务,时间为" + now, this.getClass());
-        DateTime lastMonth = DateUtil.lastMonth();
+        DateTime lastMonth = DateUtil.offsetDay(now, -30);
 
         int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>()
                 .select("COUNT(*) as num").lambda().lt(VpnUser::getLastBuyTime, lastMonth)
