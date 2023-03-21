@@ -22,7 +22,7 @@ public class SysController {
 
     @GetMapping("/api")
     public String api(HttpServletRequest request) {
-        return sysService.getApiList("http://" + request.getServerName() + ":" + request.getServerPort() + "/");
+        return sysService.getApiList("http://" + request.getServerName() + ":" + request.getServerPort());
     }
 
     @GetMapping("/upset/{key}/{value}")
