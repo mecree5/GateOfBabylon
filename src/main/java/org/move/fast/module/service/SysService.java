@@ -6,7 +6,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.move.fast.common.api.vpn.VpnTypeEnum;
-import org.move.fast.common.utils.string.Html;
+import org.move.fast.common.utils.Html;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnCrawler;
 import org.move.fast.module.mapper.auto.SysConfMapper;

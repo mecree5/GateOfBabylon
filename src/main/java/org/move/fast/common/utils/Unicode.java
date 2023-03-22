@@ -1,4 +1,4 @@
-package org.move.fast.common.utils.string;
+package org.move.fast.common.utils;
 
 /**
  * Unicode工具类
@@ -11,7 +11,7 @@ public class Unicode {
      *
      * @Param unicodeString
      */
-    public static String unicodeDecode(String unicodeString) {
+    public static String decode(String unicodeString) {
         char aChar;
         int len = unicodeString.length();
         StringBuilder outBuffer = new StringBuilder(len);

@@ -1,4 +1,4 @@
-package org.move.fast.common.utils.string;
+package org.move.fast.common.utils;
 
 import java.io.UnsupportedEncodingException;
 import java.util.Random;
@@ -7,7 +7,7 @@ import java.util.Random;
  * @author : YinShiJie
  * @date : 2022/1/25 15:29
  */
-public class RandomString {
+public class RandomStr {
 
     /* 百家姓 */
     private static final String[] Surname = {"赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈", "褚", "卫", "蒋", "沈", "韩", "杨", "朱", "秦", "尤", "许",

@@ -12,7 +12,7 @@ import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
 import org.move.fast.common.utils.HttpReq;
 import org.move.fast.common.utils.Log;
-import org.move.fast.common.utils.string.RandomString;
+import org.move.fast.common.utils.RandomStr;
 import org.move.fast.module.entity.auto.SysConf;
 import org.move.fast.module.entity.auto.VpnUser;
 import org.move.fast.module.entity.auto.VpnVmess;
@@ -96,8 +96,8 @@ public class RssService {
         String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>()
                 .eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
 
-        String username = RandomString.getRandomString(4);
-        String password = RandomString.getRandomString(10);
+        String username = RandomStr.getRandomString(4);
+        String password = RandomStr.getRandomString(10);
         String email = username + new Random().nextInt(1000) + "@qq.com";
 
         VpnUser vpnUser = DaBai.register(email, username, password, null);
