@@ -5,6 +5,7 @@ import cn.hutool.core.date.LocalDateTimeUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -13,6 +14,7 @@ import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.ip.IpTool;
 import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.api.vpn.DaBai;
+import org.move.fast.common.api.vpn.VpnTypeEnum;
 import org.move.fast.common.entity.DBFieldEnum;
 import org.move.fast.common.entity.RetCodeEnum;
 import org.move.fast.common.entity.SysConfKeyEnum;
@@ -92,6 +94,11 @@ public class VpnService {
                 .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "").eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())
                 .ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
+        //随便取一条监听代理地址是否变化
+        String vmessToCompare = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, getClientRssUrl(clientName, vpnUsers.get(0).getRssUrl()));
+        boolean addAndPortIsNotChange = checkAddAndPortIsNotChange(clientType,
+                vpnVmessMapper.selectOne(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUsers.get(0).getId())).getVmessUrl(), vmessToCompare);
+
         String resultKey = UUID.randomUUID().toString(true);
         result.put(resultKey, new LinkedHashMap<>());
         ArrayList<VpnVmess> vpnVmesses = new ArrayList<>();
@@ -102,9 +109,11 @@ public class VpnService {
             //签到改为异步签到，获取剩余流量
             rssService.checkInAsyncAndPutTrafficToResult(vpnUser, resultKey, i, result);
 
-            if (StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
+            if (addAndPortIsNotChange && StrUtil.isNotBlank(which) && which.equals(vpnUser.getLastUpdRssWhich())) {
 
-                vpnVmesses.add(vpnVmessMapper.selectOne(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId())));
+                VpnVmess vpnVmess = vpnVmessMapper.selectOne(new LambdaQueryWrapper<VpnVmess>().eq(VpnVmess::getClientType, clientType).eq(VpnVmess::getUserId, vpnUser.getId()));
+
+                vpnVmesses.add(vpnVmess);
 
                 vpnUser.setLastUsedDate(now);
                 vpnUser.setUpdDate(nowTime);
@@ -112,10 +121,8 @@ public class VpnService {
                 continue;
             }
 
-            //获取节点变化 懒加载方式
-            String rssUrls = vpnUser.getRssUrl();
-            String strCache = rssUrls.substring(rssUrls.indexOf(clientName + ":"));
-            String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, strCache.substring(clientName.length() + 1, strCache.indexOf(";")));
+            Log.info(vpnUser.getEmail() + "由于节点信息变化，重新获取节点信息", this.getClass());
+            String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, getClientRssUrl(clientName, vpnUser.getRssUrl()));
 
             vpnUser.setLastUsedDate(now);
             vpnUser.setUpdDate(nowTime);
@@ -156,6 +163,36 @@ public class VpnService {
         return Base64.encode(urls.toString());
     }
 
+    public static boolean checkAddAndPortIsNotChange(String clientType, String vmess, String vmessToCompare) {
+        String head = "vmess://";
+
+        if (VpnTypeEnum.client_v2ray.getType().equals(clientType)) {
+
+            JSONObject vmessJson = JSON.parseObject(Base64.decodeStr(vmess.substring(head.length())));
+            JSONObject vmessToCompareJson = JSON.parseObject(Base64.decodeStr(vmessToCompare.substring(head.length())));
+            return vmessToCompareJson.getString("add").equals(vmessJson.getString("add")) && vmessToCompareJson.getString("port").equals(vmessJson.getString("port"));
+
+        } else if (VpnTypeEnum.client_kitsunebi.getType().equals(clientType)) {
+            //todo
+            return true;
+        } else if (VpnTypeEnum.client_shadowrocket.getType().equals(clientType)) {
+            //todo
+            return true;
+        } else if (VpnTypeEnum.client_Quantumult.getType().equals(clientType)) {
+            //todo
+            return true;
+        } else if (VpnTypeEnum.client_QuantumultX.getType().equals(clientType)) {
+            //todo
+            return true;
+        }
+        return false;
+    }
+
+    public static String getClientRssUrl(String clientName, String allRssUrl) {
+        String strCache = allRssUrl.substring(allRssUrl.indexOf(clientName + ":"));
+        return strCache.substring(clientName.length() + 1, strCache.indexOf(";"));
+    }
+
     private void pushMsg(LocalDateTime startTime, int downNum, String clientName, String remoteAdd) {
         JSONObject pushMsg = new JSONObject(true);
         pushMsg.put("请求时间", startTime);
@@ -167,7 +204,7 @@ public class VpnService {
         pushService.pushToPerson(PushPlus.Template.json, "GateOfBabylon订阅提醒", pushMsg.toJSONString());
     }
 
-    private int checkRssNumAndGetDownNum(int downNum) {
+    public int checkRssNumAndGetDownNum(int downNum) {
 
         int haveNum = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda()
                 .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "")

@@ -50,7 +50,7 @@ public class SysService {
             vmessList.put("DABAI-" + value.getName(), url + "/vpn/down/" + value.getName());
         }
         for (VpnCrawler vpnCrawler : vpnCrawlerMapper.selectList(new QueryWrapper<>())) {
-            vmessList.put("GITHUB-" + vpnCrawler.getId(), url + "/vpn/cd/" + "/" + VpnTypeEnum.checkTypeAndGetName(vpnCrawler.getClientType()) + "/" + vpnCrawler.getId());
+            vmessList.put("GITHUB-" + vpnCrawler.getId(), url + "/vpn/cd/" + VpnTypeEnum.checkTypeAndGetName(vpnCrawler.getClientType()) + "/" + vpnCrawler.getId());
         }
         return vmessList;
     }

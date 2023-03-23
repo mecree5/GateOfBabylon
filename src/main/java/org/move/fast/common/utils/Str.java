@@ -29,13 +29,7 @@ public class Str {
 
     //正则找出所有url
     public static List<String> takeUrl(String str) {
-        Pattern pattern = Pattern.compile("http(s?)://(\\w+\\.)+\\w+([\\w./?%&=]*)?");
-        Matcher m = pattern.matcher(str);
-        List<String> urls = new ArrayList<>();
-        while (m.find()) {
-            urls.add(m.group());
-        }
-        return urls;
+        return takeByRegular("http(s?)://(\\w+\\.)+\\w+([\\w./?%&=]*)?", str);
     }
 
 
@@ -43,10 +37,10 @@ public class Str {
     public static List<String> takeByRegular(String regular, String str) {
         Pattern pattern = Pattern.compile(regular);
         Matcher m = pattern.matcher(str);
-        List<String> urls = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         while (m.find()) {
-            urls.add(m.group());
+            result.add(m.group());
         }
-        return urls;
+        return result;
     }
 }
