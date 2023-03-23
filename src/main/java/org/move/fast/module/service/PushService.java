@@ -20,7 +20,7 @@ public class PushService {
     public void pushToPerson(PushPlus.Template template, String title, String content) {
 
         if (PushPlus.pushToPerson(token, template, title, content)) {
-            Log.printAndWrite("PushService.pushToPerson推送:" + title + "内容为" + content, this.getClass());
+            Log.info("PushService.pushToPerson推送:" + title + "内容为" + content, this.getClass());
         }
     }
 

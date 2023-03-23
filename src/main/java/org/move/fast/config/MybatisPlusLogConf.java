@@ -35,12 +35,12 @@ public class MybatisPlusLogConf implements Log {
     public void error(String s, Throwable e) {
         Exception exception = new Exception();
         BeanUtils.copyProperties(e, exception);
-        org.move.fast.common.utils.Log.printAndWrite(Grade.ERROR, s, this.getClass());
-        org.move.fast.common.utils.Log.printAndWrite(exception);
+        org.move.fast.common.utils.Log.error(s, this.getClass());
+        org.move.fast.common.utils.Log.error(exception);
     }
 
     public void error(String s) {
-        org.move.fast.common.utils.Log.printAndWrite(Grade.ERROR, s, MybatisPlusLogConf.class);
+        org.move.fast.common.utils.Log.error(s, MybatisPlusLogConf.class);
     }
 
     /**
@@ -49,7 +49,7 @@ public class MybatisPlusLogConf implements Log {
      * @Param s
      */
     public void debug(String s) {
-        org.move.fast.common.utils.Log.info(s, MybatisPlusLogConf.class);
+        org.move.fast.common.utils.Log.infoNotWrite(s, MybatisPlusLogConf.class);
     }
 
     /**
@@ -58,11 +58,11 @@ public class MybatisPlusLogConf implements Log {
      * @Param s
      */
     public void trace(String s) {
-        org.move.fast.common.utils.Log.debug(s, MybatisPlusLogConf.class);
+        org.move.fast.common.utils.Log.infoNotWrite(s, MybatisPlusLogConf.class);
     }
 
     public void warn(String s) {
-        org.move.fast.common.utils.Log.info(s, MybatisPlusLogConf.class);
+        org.move.fast.common.utils.Log.infoNotWrite(s, MybatisPlusLogConf.class);
     }
 
 }

@@ -32,32 +32,32 @@ public class Log {
             FileUtil.touch(new File(LOG_PATH));
         }
 
-        //打印等级初始化 默认为info
+        //写入等级初始化 默认为info
         LOG_WRITE_GRADE = Arrays.stream(Grade.values()).filter(s -> s.name().equalsIgnoreCase(ReadConf.getConfValue("gateOfBabylon.log.write-grade")))
                 .findFirst().map(Grade::getCode).orElse(2);
     }
 
-    private static boolean isWrite(Grade grade) {
-        return grade.getCode() >= LOG_WRITE_GRADE;
+    public static <T> void debug(String targetStr, Class<T> clazz) {
+        printAndWrite(Grade.DEBUG, getHeaderStr(Grade.DEBUG, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
     }
 
-    public static <T> void info(String targetStr, Class<T> clazz) {
+    public static <T> void infoNotWrite(String targetStr, Class<T> clazz) {
         System.out.println(getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
     }
 
-    public static <T> void debug(String targetStr, Class<T> clazz) {
-        System.out.println(getHeaderStr(Grade.DEBUG, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
+    public static <T> void info(String targetStr, Class<T> clazz) {
+        printAndWrite(Grade.INFO, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
     }
 
-    private static String getHeaderStr(Grade grade, String datetime, String clazzName) {
-        return "[" + datetime + "]" + "[" + grade.name() + "]" + clazzName + "::";
+    public static <T> void infoPro(String targetStr, Class<T> clazz) {
+        printAndWrite(Grade.INFO, Console.colorString(getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.SKYBLUE));
     }
 
-    public static <T> void printAndWrite(String targetStr, Class<T> clazz) {
-        printAndWrite(Grade.INFO, targetStr, clazz);
+    public static <T> void error(String targetStr, Class<T> clazz) {
+        printAndWrite(Grade.ERROR, Console.colorString(getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.RED));
     }
 
-    public static void printAndWrite(Exception exception) {
+    public static void error(Exception exception) {
 
         StringBuilder log = new StringBuilder();
         log.append(exception.getClass()).append(":").append(exception.getMessage()).append("\r\n");
@@ -68,18 +68,12 @@ public class Log {
             log.append("    at  ").append(traceElement).append("\r\n");
         }
 
-        Log.printAndWrite(Grade.ERROR, log.toString(), exception.getClass());
+        Log.printAndWrite(Grade.ERROR, Console.colorString(log.toString(), Console.Color.RED));
     }
 
-    public static <T> void printAndWrite(Grade grade, String targetStr, Class<T> clazz) {
+    private static void printAndWrite(Grade grade, String targetStr) {
 
-        if (Grade.ERROR.name().equals(grade.name())) {
-            System.err.println(targetStr);
-        } else {
-            System.out.println(targetStr);
-        }
-
-        if (!isWrite(grade)){
+        if (!isWrite(grade)) {
             return;
         }
 
@@ -92,10 +86,18 @@ public class Log {
             FileUtil.touch(new File(LOG_PATH));
         }
 
-        FileWriter writer = new FileWriter(LOG_PATH);
-        targetStr = getHeaderStr(grade, now, clazz.getName()) + targetStr;
+        System.out.println(targetStr);
 
+        FileWriter writer = new FileWriter(LOG_PATH);
         writer.append(targetStr + "\r\n");
+    }
+
+    private static boolean isWrite(Grade grade) {
+        return grade.getCode() >= LOG_WRITE_GRADE;
+    }
+
+    private static String getHeaderStr(Grade grade, String datetime, String clazzName) {
+        return "[" + datetime + "]" + "[" + grade.name() + "]" + clazzName + "::";
     }
 
     public enum Grade {
@@ -112,7 +114,6 @@ public class Log {
         public int getCode() {
             return code;
         }
-
     }
 
 }

@@ -40,7 +40,7 @@ public class HttpReq {
             fileOutputStream.write(outPut.toByteArray());
 
         } catch (IOException e) {
-            Log.printAndWrite(e);
+            Log.error(e);
         }
     }
 
@@ -64,7 +64,7 @@ public class HttpReq {
             result = String.valueOf(outPut);
 
         } catch (IOException e) {
-            Log.printAndWrite(e);
+            Log.error(e);
         }
 
         return result;

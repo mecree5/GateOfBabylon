@@ -48,7 +48,7 @@ public class VpnSchService {
     public void makeUpForRssUrl() {
 
         DateTime now = DateTime.now();
-        Log.printAndWrite("开始执行VpnService.makeUpForRssUrl定时任务,时间为" + now, this.getClass());
+        Log.info("开始执行VpnService.makeUpForRssUrl定时任务,时间为" + now, this.getClass());
 
         String which = sysConfMapper.selectOne(new LambdaQueryWrapper<SysConf>()
                 .eq(SysConf::getConfKey, SysConfKeyEnum.vpn_rss_which.name())).getConfVal();
@@ -73,14 +73,14 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.makeUpForRssUrl定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
+        Log.info("完成执行VpnService.makeUpForRssUrl定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
     @Scheduled(cron = "0 30 0 * * ?")
     public void expire() {
 
         DateTime now = DateTime.now();
-        Log.printAndWrite("开始执行VpnService.expire定时任务,时间为" + now, this.getClass());
+        Log.info("开始执行VpnService.expire定时任务,时间为" + now, this.getClass());
         DateTime lastMonth = DateUtil.offsetDay(now, -30);
 
         int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>()
@@ -107,14 +107,14 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.expire定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
+        Log.info("完成执行VpnService.expire定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
     @Scheduled(cron = "0 30 2 * * ?")
     public void buy() {
 
         DateTime now = DateTime.now();
-        Log.printAndWrite("开始执行VpnService.buy定时任务,时间为" + now, this.getClass());
+        Log.info("开始执行VpnService.buy定时任务,时间为" + now, this.getClass());
         DateTime lastMonth = DateUtil.lastMonth();
 
         int count = Integer.parseInt(String.valueOf(vpnUserMapper.selectMaps(new QueryWrapper<VpnUser>().select("COUNT(*) as num").lambda()
@@ -154,7 +154,7 @@ public class VpnSchService {
             }
         }
 
-        Log.printAndWrite("完成执行VpnService.buy定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
+        Log.info("完成执行VpnService.buy定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
 }

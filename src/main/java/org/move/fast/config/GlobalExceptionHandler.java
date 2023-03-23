@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = CustomerException.class)
     public Result<Object> customExceptionHandler(CustomerException customerException) {
 
-        Log.printAndWrite(customerException);
+        Log.error(customerException);
         return Result.exception(customerException);
     }
 
@@ -35,7 +35,7 @@ public class GlobalExceptionHandler {
     public Result<Object> exceptionHandler(Exception exception) {
 
         if (!exceptionMaskList.contains(exception.getClass().getName())) {
-            Log.printAndWrite(exception);
+            Log.error(exception);
         }
         return Result.exception(exception);
     }

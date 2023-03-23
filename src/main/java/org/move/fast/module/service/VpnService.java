@@ -68,7 +68,7 @@ public class VpnService {
     public void init() {
         //设置本地代理
         if ("true".equalsIgnoreCase(ReadConf.getConfValue("gateOfBabylon.proxy.is-start"))) {
-            System.out.println("开启代理...");
+            Log.infoPro("开启代理...", this.getClass());
             System.setProperty("socksProxyHost", ReadConf.getConfValue("gateOfBabylon.proxy.host"));
             System.setProperty("socksProxyPort", ReadConf.getConfValue("gateOfBabylon.proxy.port"));
         }
@@ -121,7 +121,7 @@ public class VpnService {
                 continue;
             }
 
-            Log.info(vpnUser.getEmail() + "由于节点信息变化，重新获取节点信息", this.getClass());
+            Log.infoPro(vpnUser.getEmail() + "由于节点信息变化，重新获取节点信息", this.getClass());
             String vmess = rssService.getVmessByRssUrl(Integer.parseInt(which), clientType, getClientRssUrl(clientName, vpnUser.getRssUrl()));
 
             vpnUser.setLastUsedDate(now);
@@ -139,7 +139,7 @@ public class VpnService {
 
         //监听是否完成签到
         while (result.get(resultKey).size() < downNum) {
-            Log.info(resultKey + "监听中...", this.getClass());
+            Log.infoPro(resultKey + "监听中...", this.getClass());
             if (LocalDateTimeUtil.between(nowTime, LocalDateTime.now(), ChronoUnit.SECONDS) > 30) {
                 throw new CustomerException(RetCodeEnum.async_wait_error);
             }

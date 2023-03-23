@@ -18,7 +18,11 @@ public class ReadConf {
     Environment initEnvironment;
 
     public static String getConfValue(String key) {
-        return environment.getProperty(key);
+        try {
+            return environment.getProperty(key);
+        } catch (NullPointerException e){
+            return "";
+        }
     }
 
     @PostConstruct

@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.move.fast.common.utils.Cmd;
 import org.move.fast.common.utils.IP;
 import org.move.fast.common.utils.Log;
 import org.move.fast.common.utils.Str;
@@ -55,7 +54,7 @@ public class DaBai {
         if (!checkRsp(rsp)) {
             return false;
         }
-        Log.info(Cmd.colorString("邮件发送:" + "响应信息为   " + Unicode.decode(rsp), 32, 1), DaBai.class);
+        Log.infoPro("邮件发送:" + "响应信息为   " + Unicode.decode(rsp), DaBai.class);
         return checkRsp(rsp);
     }
 
@@ -72,7 +71,7 @@ public class DaBai {
         String rsp = HttpRequest.post(vpn_url + vpn_register_path).header("x-forwarded-for", IP.getRandomIp()).body(JSONObject.toJSONString(body)).execute().body();
         if (checkRsp(rsp)) {
 
-            Log.info(Cmd.colorString("账号" + email + "注册成功,响应信息为   " + Unicode.decode(rsp), 32, 1), DaBai.class);
+            Log.infoPro("账号" + email + "注册成功,响应信息为   " + Unicode.decode(rsp), DaBai.class);
 
             LocalDateTime time = LocalDateTime.now();
             VpnUser vpnUser = new VpnUser();
@@ -107,7 +106,7 @@ public class DaBai {
         String email = cookie.substring(cookie.indexOf("email="), cookie.indexOf(";", cookie.indexOf("email=") + 1) + 1);
         String uid = cookie.substring(cookie.indexOf("uid="), cookie.indexOf(";", cookie.indexOf("uid=") + 1) + 1);
 
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "登录成功," + "cookie信息为   " + uid + expire_in + key + email, 32, 1), DaBai.class);
+        Log.infoPro("账号" + vpnUser.getEmail() + "登录成功," + "cookie信息为   " + uid + expire_in + key + email, DaBai.class);
 
         return uid + expire_in + key + email;
     }
@@ -127,7 +126,7 @@ public class DaBai {
             return false;
         }
 
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "购买成功,响应信息为  " + Unicode.decode(rsp), 32, 1), DaBai.class);
+        Log.infoPro("账号" + vpnUser.getEmail() + "购买成功,响应信息为  " + Unicode.decode(rsp), DaBai.class);
         vpnUser.setLastBuyTime(LocalDate.now());
         return true;
     }
@@ -138,7 +137,7 @@ public class DaBai {
         if (StrUtil.isBlank(rsp)) {
             return null;
         }
-        Log.info(Cmd.colorString("账号" + vpnUser.getEmail() + "签到成功,响应信息为  " + Unicode.decode(rsp), 32, 1), DaBai.class);
+        Log.infoPro("账号" + vpnUser.getEmail() + "签到成功,响应信息为  " + Unicode.decode(rsp), DaBai.class);
 
         JSONObject rspJsonObj = JSONObject.parseObject(rsp);
         if (!suc_ret_code.equals(rspJsonObj.getString("ret"))) {
@@ -159,29 +158,29 @@ public class DaBai {
         }
 
         String v2ray = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(sub=3)+", result).get(0);
-        Log.info(Cmd.colorString("v2ray获取订阅成功    " + "订阅信息为" + Unicode.decode(v2ray), 32, 1), DaBai.class);
+        Log.infoPro("v2ray获取订阅成功    " + "订阅信息为" + Unicode.decode(v2ray), DaBai.class);
         hashMap.put(VpnTypeEnum.client_v2ray, v2ray);
 
         String kitsunebi = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=kitsunebi)+", result).get(0);
-        Log.info(Cmd.colorString("kitsunebi获取订阅成功    " + "订阅信息为" + Unicode.decode(kitsunebi), 32, 1), DaBai.class);
+        Log.infoPro("kitsunebi获取订阅成功    " + "订阅信息为" + Unicode.decode(kitsunebi), DaBai.class);
         hashMap.put(VpnTypeEnum.client_kitsunebi, kitsunebi);
 
 //        //暂不支持clash 更新订阅为 yaml配置
-//        String clash = HtmlToStringUtils.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
-//        Log.info(CmdColour.colorString("clash获取订阅成功" + " 订阅信息为" + UnicodeUtils.unicodeDecode(clash), 32, 1));
+//        String clash = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(clash=1)+", result).get(0);
+//        Log.infoPro("clash获取订阅成功" + " 订阅信息为" + Unicode.decode(clash), DaBai.class);
 //        hashMap.put(VpnEnum.client_clash, clash);
 
         String shadowrocket = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=shadowrocket)+", result).get(0);
-        Log.info(Cmd.colorString("shadowrocket获取订阅成功    " + "订阅信息为" + Unicode.decode(shadowrocket), 32, 1), DaBai.class);
+        Log.infoPro("shadowrocket获取订阅成功    " + "订阅信息为" + Unicode.decode(shadowrocket), DaBai.class);
         hashMap.put(VpnTypeEnum.client_shadowrocket, shadowrocket);
 
         String Quantumult = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumult)+", result).get(0);
-        Log.info(Cmd.colorString("Quantumult获取订阅成功    " + "订阅信息为" + Unicode.decode(Quantumult), 32, 1), DaBai.class);
+        Log.infoPro("Quantumult获取订阅成功    " + "订阅信息为" + Unicode.decode(Quantumult), DaBai.class);
         hashMap.put(VpnTypeEnum.client_Quantumult, Quantumult);
 
         //不用解密 直接为vmess串
         String QuantumultX = Str.takeByRegular("[A-Za-z\\u003a\\u002f\\u002d0-9\\u005f\\u002e\\u003f\\u003d\\u0026]+(list=quantumultx)+", result).get(0);
-        Log.info(Cmd.colorString("QuantumultX获取订阅成功   " + "订阅信息为" + Unicode.decode(QuantumultX), 32, 1), DaBai.class);
+        Log.infoPro("QuantumultX获取订阅成功   " + "订阅信息为" + Unicode.decode(QuantumultX), DaBai.class);
         hashMap.put(VpnTypeEnum.client_QuantumultX, QuantumultX);
 
         return hashMap;

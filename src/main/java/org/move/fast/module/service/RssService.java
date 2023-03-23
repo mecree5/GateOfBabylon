@@ -47,7 +47,7 @@ public class RssService {
 
     @Async("asyncTaskExecutor")
     public void checkInAsyncAndPutTrafficToResult(VpnUser vpnUser, String resultKey, Integer itemKey, Map<String, LinkedHashMap<Integer, String>> result) {
-        Log.info(Thread.currentThread().getName() + "正在签到" + vpnUser.getEmail(), this.getClass());
+        Log.infoPro(Thread.currentThread().getName() + "正在签到" + vpnUser.getEmail(), this.getClass());
         result.get(resultKey).put(itemKey, checkInAndGetTraffic(vpnUser));
     }
 
