@@ -86,11 +86,11 @@ public class Log {
             FileUtil.touch(new File(LOG_PATH));
         }
 
-        String printStr = targetStr;
         if (color != null) {
-            printStr = Console.colorString(targetStr, color);
+            System.out.println(Console.colorString(targetStr, color));
+        } else {
+            System.out.println(targetStr);
         }
-        System.out.println(printStr);
 
         FileWriter writer = new FileWriter(LOG_PATH);
         writer.append(targetStr + "\r\n");
