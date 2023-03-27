@@ -1,10 +1,10 @@
 package org.move.fast.common.utils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.*;
-import java.util.ArrayList;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -60,68 +60,55 @@ public class IP {
         return b[0] + "." + b[1] + "." + b[2] + "." + b[3];
     }
 
-    public static String getIpAddressInWindows() {
-        InetAddress address;
-        try {
-            address = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
+    public static String getIpAddress() {
+        if (isWindowsOS()) {
+            return getWindowsLocalIp();
         }
-        return address.getHostAddress();
-
+        return getLinuxLocalIp();
     }
 
-    public static List<String> getAllIpAddress() {
-        ArrayList<String> ips = new ArrayList<>();
-        Enumeration<NetworkInterface> allNetworkInterfaces;
-        try {
-            allNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
+    // 判断操作系统是否是Windows
+    public static boolean isWindowsOS() {
+        boolean isWindowsOS = false;
+        String osName = System.getProperty("os.name");
+        if (osName.toLowerCase().contains("windows")) {
+            isWindowsOS = true;
         }
-        NetworkInterface networkInterface = null;
+        return isWindowsOS;
+    }
 
-        networkInterface = allNetworkInterfaces.nextElement();
-        //System.out.println("network interface: " + networkInterface.getDisplayName());
-        Enumeration<InetAddress> allInetAddress = networkInterface.getInetAddresses();
-        InetAddress ipAddress = null;
-        while (allInetAddress.hasMoreElements()) {
-            //get next ip address
-            ipAddress = allInetAddress.nextElement();
-            if (ipAddress instanceof Inet4Address) {
-                String hostAddress = ipAddress.getHostAddress();
-                if (!"127.0.0.1".equals(hostAddress)) {
-                    ips.add(hostAddress);
+    private static String getWindowsLocalIp() {
+        String ip;
+        try {
+            ip = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            ip = "127.0.0.1";
+        }
+        return ip;
+    }
+
+    private static String getLinuxLocalIp() {
+        String ip = "";
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface intf = en.nextElement();
+                String name = intf.getName();
+                if (!name.contains("docker") && !name.contains("lo")) {
+                    for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                        InetAddress inetAddress = enumIpAddr.nextElement();
+                        if (!inetAddress.isLoopbackAddress()) {
+                            String ipaddress = inetAddress.getHostAddress().toString();
+                            if (!ipaddress.contains("::") && !ipaddress.contains("0:0:") && !ipaddress.contains("fe80")) {
+                                ip = ipaddress;
+                            }
+                        }
+                    }
                 }
             }
+        } catch (SocketException ex) {
+            ip = "127.0.0.1";
         }
-        return ips;
-    }
-
-    public static String getIpAddressByName(String networkInterfaceName) {
-
-        NetworkInterface networkInterface = null;
-        try {
-            networkInterface = NetworkInterface.getByName(networkInterfaceName);
-        } catch (SocketException e) {
-            throw new RuntimeException(e);
-        }
-        if (networkInterface == null) {
-            return null;
-        }
-        System.out.println("network interface: " + networkInterface.getDisplayName());
-
-        InetAddress ipAddress = null;
-        Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
-
-        while (addresses.hasMoreElements()) {
-            ipAddress = addresses.nextElement();
-
-            if (ipAddress instanceof Inet4Address) {
-                return ipAddress.getHostAddress();
-            }
-        }
-        return null;
+        return ip;
     }
 
 }

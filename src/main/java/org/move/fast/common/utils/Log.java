@@ -38,7 +38,7 @@ public class Log {
     }
 
     public static <T> void debug(String targetStr, Class<T> clazz) {
-        printAndWrite(Grade.DEBUG, getHeaderStr(Grade.DEBUG, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
+        printAndWrite(Grade.DEBUG, getHeaderStr(Grade.DEBUG, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, null);
     }
 
     public static <T> void infoNotWrite(String targetStr, Class<T> clazz) {
@@ -46,21 +46,21 @@ public class Log {
     }
 
     public static <T> void info(String targetStr, Class<T> clazz) {
-        printAndWrite(Grade.INFO, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr);
+        printAndWrite(Grade.INFO, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, null);
     }
 
     public static <T> void infoPro(String targetStr, Class<T> clazz) {
-        printAndWrite(Grade.INFO, Console.colorString(getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.SKYBLUE));
+        printAndWrite(Grade.INFO, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.SKYBLUE);
     }
 
     public static <T> void error(String targetStr, Class<T> clazz) {
-        printAndWrite(Grade.ERROR, Console.colorString(getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.RED));
+        printAndWrite(Grade.ERROR, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.RED);
     }
 
     public static void error(Exception exception) {
 
         StringBuilder log = new StringBuilder();
-        log.append(exception.getClass()).append(":").append(exception.getMessage()).append("\r\n");
+        log.append(exception.getClass().toString().substring(6)).append(":").append(exception.getMessage()).append("\r\n");
 
         StackTraceElement[] trace = exception.getStackTrace();
 
@@ -68,10 +68,10 @@ public class Log {
             log.append("    at  ").append(traceElement).append("\r\n");
         }
 
-        Log.printAndWrite(Grade.ERROR, Console.colorString(log.toString(), Console.Color.RED));
+        Log.printAndWrite(Grade.ERROR, log.toString(), Console.Color.RED);
     }
 
-    private static void printAndWrite(Grade grade, String targetStr) {
+    private static void printAndWrite(Grade grade, String targetStr, Console.Color color) {
 
         if (!isWrite(grade)) {
             return;
@@ -86,7 +86,11 @@ public class Log {
             FileUtil.touch(new File(LOG_PATH));
         }
 
-        System.out.println(targetStr);
+        String printStr = targetStr;
+        if (color != null) {
+            printStr = Console.colorString(targetStr, color);
+        }
+        System.out.println(printStr);
 
         FileWriter writer = new FileWriter(LOG_PATH);
         writer.append(targetStr + "\r\n");
