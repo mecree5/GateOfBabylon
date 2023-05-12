@@ -39,6 +39,9 @@ gateOfBabylon:
     host: 127.0.0.1
     port: 10808
   api:
+    leiGod:
+      username:
+      password:
     notice:
       push-plus-token:
     youdao:
