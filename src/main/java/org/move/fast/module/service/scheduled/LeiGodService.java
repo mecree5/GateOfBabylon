@@ -17,7 +17,7 @@ public class LeiGodService {
 
     private static long startTime;
 
-    @Scheduled(cron = "*/10 * * * *")
+    @Scheduled(cron = "0 0/10 * * * ? ")
     public void pause() {
 
         long now = System.currentTimeMillis();
