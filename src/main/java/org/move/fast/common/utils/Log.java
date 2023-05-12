@@ -57,7 +57,7 @@ public class Log {
         printAndWrite(Grade.ERROR, getHeaderStr(Grade.INFO, LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")), clazz.getName()) + targetStr, Console.Color.RED);
     }
 
-    public static void error(Exception exception) {
+    public static String error(Exception exception) {
 
         StringBuilder log = new StringBuilder();
         log.append(exception.getClass().toString().substring(6)).append(":").append(exception.getMessage()).append("\r\n");
@@ -69,6 +69,7 @@ public class Log {
         }
 
         Log.printAndWrite(Grade.ERROR, log.toString(), Console.Color.RED);
+        return log.toString();
     }
 
     private static void printAndWrite(Grade grade, String targetStr, Console.Color color) {

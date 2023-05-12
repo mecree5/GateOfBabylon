@@ -3,6 +3,7 @@ package org.move.fast.common.api.push;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONObject;
+import org.move.fast.common.utils.Log;
 
 import java.util.HashMap;
 
@@ -43,14 +44,6 @@ public class PushPlus {
 
         }
         return false;
-    }
-
-    public static boolean pushToPerson(String token, String content) {
-        return pushToPerson(token, Template.html, null, content);
-    }
-
-    public static boolean pushToPerson(String token, String title, String content) {
-        return pushToPerson(token, Template.html, title, content);
     }
 
 }

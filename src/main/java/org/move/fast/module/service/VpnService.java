@@ -158,7 +158,7 @@ public class VpnService {
         //避免内存溢出
         result.remove(resultKey);
 
-        pushMsg(nowTime, downNum, clientName, remoteAdd);
+//        pushMsg(nowTime, downNum, clientName, remoteAdd);
 
         return Base64.encode(urls.toString());
     }
