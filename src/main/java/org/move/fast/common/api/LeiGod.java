@@ -54,7 +54,7 @@ public class LeiGod {
                 .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
                 .form(param);
         String body = post.execute().body();
-        Log.infoPro(body, LeiGod.class);
+        Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
             JSONObject jsonObject = JSONObject.parseObject(body);
@@ -72,7 +72,7 @@ public class LeiGod {
                 .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
                 .form("account_token", token).form("lang", "zh_CN");
         String body = post.execute().body();
-        Log.infoPro(body, LeiGod.class);
+        Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
             return JSONObject.parseObject(Unicode.decode(body));
@@ -86,7 +86,7 @@ public class LeiGod {
                 .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
                 .form("account_token", token).form("lang", "zh_CN");
         String body = post.execute().body();
-        Log.infoPro(body, LeiGod.class);
+        Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
             return sucRetCode.equals(JSONObject.parseObject(Unicode.decode(body)).get("code"));
@@ -100,7 +100,7 @@ public class LeiGod {
                 .header("User-Agent", "Mozilla/5.0 (Linux; Android 10; Pixel 4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.164 Mobile Safari/537.36")
                 .form("account_token", token).form("lang", "zh_CN");
         String body = post.execute().body();
-        Log.infoPro(body, LeiGod.class);
+        Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
             return sucRetCode.equals(JSONObject.parseObject(Unicode.decode(body)).get("code"));

@@ -1,5 +1,6 @@
 package org.move.fast.module.service.scheduled;
 
+import com.alibaba.fastjson.JSONObject;
 import org.move.fast.common.api.LeiGod;
 import org.move.fast.common.api.push.PushPlus;
 import org.move.fast.common.utils.Log;
@@ -23,23 +24,28 @@ public class LeiGodService {
         long now = System.currentTimeMillis();
         String token = LeiGod.login();
 
-        if (startTime > 0) {
-            if (now - startTime > 3600000 * 6) {
-                if (LeiGod.pause(token)) {
-                    startTime = 0;
-                    Log.info("雷神加速器开启超过6小时，已自动关闭", this.getClass());
-                    pushService.pushToPerson(PushPlus.Template.txt, "雷神加速器自动关闭成功", "雷神加速器自动关闭成功");
-                }
-                return;
+        if (startTime > 0 && now - startTime > 3600000 * 6) {
+            boolean pauseSuc = LeiGod.pause(token);
+            if (pauseSuc) {
+                startTime = 0;
             }
+            Log.infoPro("雷神加速器开启超过6小时，自动关闭" + (pauseSuc ? "成功" : "失败"), this.getClass());
+            pushService.pushToPerson(PushPlus.Template.txt, "雷神加速器开启超过6小时，自动关闭" + (pauseSuc ? "成功" : "失败"), "雷神加速器开启超过6小时，自动关闭" + (pauseSuc ? "成功" : "失败"));
+            return;
         }
 
+        JSONObject info = LeiGod.info(token);
+        boolean isPause = "1".equals(String.valueOf(info.get("pause_status_id"))); //0-未暂停 1-暂停
 
-        if ("0".equals(String.valueOf(LeiGod.info(token).get("pause_status_id")))) {
-            //开始中
+        if (isPause) {
+            Log.infoPro("监测到雷神加速器处于暂停状态，结束计时", this.getClass());
+            startTime = 0;
+            return;
+        }
+        if (startTime == 0) {
+            Log.infoPro("监测到雷神加速器处于开始状态，开始计时", this.getClass());
             startTime = now;
         }
-
     }
 
 
