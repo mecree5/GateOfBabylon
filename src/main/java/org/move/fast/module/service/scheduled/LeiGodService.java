@@ -16,7 +16,7 @@ public class LeiGodService {
     @Resource
     PushService pushService;
 
-    private static long startTime;
+    private static long startTime = 0;
 
     @Scheduled(cron = "0 0/10 * * * ? ")
     public void pause() {
@@ -47,6 +47,5 @@ public class LeiGodService {
             startTime = now;
         }
     }
-
 
 }

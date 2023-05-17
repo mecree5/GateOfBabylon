@@ -41,7 +41,7 @@ public class PushPlus {
             if (rspJsonObj.containsKey("code")) {
                 return rspJsonObj.getString("code").equals(suc_code);
             }
-
+            Log.info("推送失败,响应信息：" + rsp, PushPlus.class);
         }
         return false;
     }

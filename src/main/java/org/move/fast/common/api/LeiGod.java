@@ -75,7 +75,7 @@ public class LeiGod {
         Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
-            return JSONObject.parseObject(Unicode.decode(body));
+            return JSONObject.parseObject(Unicode.decode(body)).getJSONObject("data");
         }
         throw new CustomerException("雷神加速器账号获取信息失败");
     }
