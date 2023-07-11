@@ -91,7 +91,7 @@ public class VpnService {
 
         //避免因为并发情况下导致的数据未初始化完成而被使用
         List<VpnUser> vpnUsers = vpnUserMapper.selectList(new LambdaQueryWrapper<VpnUser>().eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())
-                .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "").eq(VpnUser::getStatus, DBFieldEnum.vpn_user_status_normal.getKey())
+                .isNotNull(VpnUser::getRssUrl).ne(VpnUser::getRssUrl, "")
                 .ne(VpnUser::getLastUsedDate, LocalDate.now()).last("limit " + downNum));
 
         //随便取一条监听代理地址是否变化

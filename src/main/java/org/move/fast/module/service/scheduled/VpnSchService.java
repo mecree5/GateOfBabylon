@@ -44,7 +44,7 @@ public class VpnSchService {
     /**
      * 补偿机制去重新获取RssUrl
      */
-    @Scheduled(cron = "0 10 0 * * ?")
+//    @Scheduled(cron = "0 10 0 * * ?")
     public void makeUpForRssUrl() {
 
         DateTime now = DateTime.now();
@@ -76,7 +76,7 @@ public class VpnSchService {
         Log.info("完成执行VpnService.makeUpForRssUrl定时任务,处理了" + vpnUsers.size() + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
-    @Scheduled(cron = "0 30 0 * * ?")
+//    @Scheduled(cron = "0 30 0 * * ?")
     public void expire() {
 
         DateTime now = DateTime.now();
@@ -110,7 +110,7 @@ public class VpnSchService {
         Log.info("完成执行VpnService.expire定时任务,处理了" + count + "条数据,耗时为" + DateUtil.between(now, DateTime.now(), DateUnit.MS) + "ms.", this.getClass());
     }
 
-    @Scheduled(cron = "0 30 2 * * ?")
+//    @Scheduled(cron = "0 30 2 * * ?")
     public void buy() {
 
         DateTime now = DateTime.now();

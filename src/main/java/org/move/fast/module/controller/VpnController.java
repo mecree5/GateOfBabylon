@@ -1,6 +1,7 @@
 package org.move.fast.module.controller;
 
 import cn.hutool.core.io.IoUtil;
+import cn.hutool.http.HttpRequest;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.vpn.VpnTypeEnum;
 import org.move.fast.common.entity.RetCodeEnum;
@@ -30,6 +31,19 @@ public class VpnController {
             throw new CustomerException(RetCodeEnum.validated_error);
         }
         return rssService.getRssUrl(num);
+    }
+
+    @RequestMapping(value = "/cd/my", method = RequestMethod.GET)
+    public void my(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName, @PathVariable String id) throws IOException {
+        byte[] bytes = HttpRequest.get("https://yysw.acyun.tk/api/v1/client/subscribe?token=00d3734775f6b474371008ed43a2d4fc").execute().body().getBytes();
+
+        response.setContentType("text/plain");
+        response.setContentLength(bytes.length);
+
+        response.setHeader("Content-Disposition", String.format("attachment; filename=\"%s\"", "rss.txt"));
+
+        IoUtil.copy(new ByteArrayInputStream(bytes), response.getOutputStream());
+        response.flushBuffer();
     }
 
     @RequestMapping(value = "/down/{clientName}", method = RequestMethod.GET)
