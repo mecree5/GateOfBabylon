@@ -24,6 +24,10 @@ public class LeiGodService {
         long now = System.currentTimeMillis();
         String token = LeiGod.login();
 
+        if (startTime > 0){
+            Log.infoPro("雷神加速器已开启" + (now - startTime)/1000 + "秒", this.getClass());
+        }
+
         if (startTime > 0 && now - startTime > 3600000 * 6) {
             boolean pauseSuc = LeiGod.pause(token);
             if (pauseSuc) {
