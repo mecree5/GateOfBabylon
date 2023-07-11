@@ -34,7 +34,7 @@ public class VpnController {
     }
 
     @RequestMapping(value = "/cd/my", method = RequestMethod.GET)
-    public void my(HttpServletRequest request, HttpServletResponse response, @PathVariable String clientName, @PathVariable String id) throws IOException {
+    public void my(HttpServletResponse response) throws IOException {
         byte[] bytes = HttpRequest.get("https://yysw.acyun.tk/api/v1/client/subscribe?token=00d3734775f6b474371008ed43a2d4fc").execute().body().getBytes();
 
         response.setContentType("text/plain");
