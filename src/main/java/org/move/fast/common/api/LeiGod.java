@@ -103,7 +103,7 @@ public class LeiGod {
         Log.info(body, LeiGod.class);
 
         if (StrUtil.isNotBlank(body)) {
-            return sucRetCode.equals(JSONObject.parseObject(Unicode.decode(body)).get("code"));
+            return sucRetCode.equals(JSONObject.parseObject(Unicode.decode(body)).get("code").toString());
         }
         throw new CustomerException("雷神加速器账号暂停失败");
     }

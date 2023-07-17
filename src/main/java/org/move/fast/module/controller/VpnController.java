@@ -5,6 +5,7 @@ import cn.hutool.http.HttpRequest;
 import org.move.fast.common.Exception.CustomerException;
 import org.move.fast.common.api.vpn.VpnTypeEnum;
 import org.move.fast.common.entity.RetCodeEnum;
+import org.move.fast.config.ReadConf;
 import org.move.fast.module.service.RssService;
 import org.move.fast.module.service.VpnService;
 import org.springframework.web.bind.annotation.*;
@@ -35,7 +36,7 @@ public class VpnController {
 
     @RequestMapping(value = "/cd/my", method = RequestMethod.GET)
     public void my(HttpServletResponse response) throws IOException {
-        byte[] bytes = HttpRequest.get("https://yysw.acyun.tk/api/v1/client/subscribe?token=00d3734775f6b474371008ed43a2d4fc").execute().body().getBytes();
+        byte[] bytes = HttpRequest.get(ReadConf.getConfValue("gateOfBabylon.rss-url")).execute().body().getBytes();
 
         response.setContentType("text/plain");
         response.setContentLength(bytes.length);

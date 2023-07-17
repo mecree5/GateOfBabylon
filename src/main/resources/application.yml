@@ -30,6 +30,7 @@ spring:
     url: jdbc:mysql://localhost:3306/gateofbabylon?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
 
 gateOfBabylon:
+  rss-url:
   log:
     write-grade: debug
     mybatis-plus:
@@ -65,6 +66,7 @@ spring:
     url: jdbc:mysql://prod_url:port/gateofbabylon?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC&useSSL=false
 
 gateOfBabylon:
+  rss-url:
   log:
     write-grade: info
     mybatis-plus:
